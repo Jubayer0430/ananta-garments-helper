@@ -198,7 +198,38 @@
     </div>
 </div>
 
+<div class="card">
+    <h2>❌ Missing Carton Checker</h2>
 
+    <div class="inputs">
+        <div>
+            <label>Starting Carton</label>
+            <input type="number" id="missingStart" placeholder="Example: 1">
+        </div>
+
+        <div>
+            <label>Ending Carton</label>
+            <input type="number" id="missingEnd" placeholder="Example: 25">
+        </div>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <label>Existing Cartons</label>
+        <input
+            type="text"
+            id="cartonList"
+            placeholder="Example: 1,2,3,5,6,8,9,10"
+        >
+    </div>
+
+    <button onclick="checkMissingCartons()">
+        Check Missing Cartons
+    </button>
+
+    <div class="result" id="missingResult">
+        Missing cartons will appear here.
+    </div>
+</div>
 <div class="card">
     <h2>🧹 Clear All</h2>
     <button class="danger" onclick="clearAll()">Clear Everything</button>
@@ -268,7 +299,34 @@ function clearAll() {
     document.getElementById("cartonResult").innerText =
         "Carton numbers will appear here.";
 }
+function checkMissingCartons() {
 
+    let start = Number(document.getElementById("missingStart").value);
+    let end = Number(document.getElementById("missingEnd").value);
+    let cartonText = document.getElementById("cartonList").value;
+
+    let existing = cartonText
+        .split(",")
+        .map(function(item) {
+            return Number(item.trim());
+        });
+
+    let missing = [];
+
+    for (let i = start; i <= end; i++) {
+        if (!existing.includes(i)) {
+            missing.push(i);
+        }
+    }
+
+    if (missing.length === 0) {
+        document.getElementById("missingResult").innerText =
+            "✅ No Missing Carton";
+    } else {
+        document.getElementById("missingResult").innerText =
+            "❌ Missing Carton: " + missing.join(", ");
+    }
+}
 </script>
 
 </body>
