@@ -1,72 +1,275 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
-    <title>Jubayer's Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garments Data Entry Helper</title>
 
-    <style>
+```
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f4f6f8;
+        color: #222;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    header {
+        background: #1f2937;
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        margin-bottom: 8px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+        margin-bottom: 15px;
+        color: #1f2937;
+    }
+
+    .inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    input {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+        font-size: 16px;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 11px 18px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    .result {
+        margin-top: 15px;
+        padding: 15px;
+        background: #eef2ff;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .danger {
+        background: #dc2626;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #666;
+    }
+
+    @media (max-width: 600px) {
+        .inputs {
+            grid-template-columns: 1fr;
+        }
+
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            text-align: center;
+            padding: 10px;
         }
+    }
+</style>
+```
 
-        .header {
-            background: #222;
-            color: white;
-            padding: 25px;
-        }
-
-        .content {
-            padding: 80px 20px;
-        }
-
-        h1 {
-            font-size: 45px;
-        }
-
-        p {
-            font-size: 20px;
-            color: #555;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .footer {
-            margin-top: 80px;
-            background: #222;
-            color: white;
-            padding: 20px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h2>Jubayer's Website</h2>
+<div class="container">
+
+```
+<header>
+    <h1>Garments Data Entry Helper</h1>
+    <p>Useful tools for PO & Packing List work</p>
+</header>
+
+<div class="card">
+    <h2>📦 Carton Calculator</h2>
+
+    <div class="inputs">
+        <div>
+            <label>Number of Cartons</label>
+            <input type="number" id="cartons" placeholder="Example: 25">
+        </div>
+
+        <div>
+            <label>Pieces per Carton</label>
+            <input type="number" id="pieces" placeholder="Example: 20">
+        </div>
     </div>
 
-    <div class="content">
-        <h1>Welcome to My Website</h1>
+    <button onclick="calculateQty()">Calculate Total Qty</button>
 
-        <p>
-            Hello! I am Jubayer.<br>
-            This is my first website.
-        </p>
+    <div class="result" id="qtyResult">
+        Total Qty: 0 pcs
+    </div>
+</div>
 
-        <button onclick="alert('Welcome to Jubayer Website!')">Explore</button>
+
+<div class="card">
+    <h2>⚖️ Weight Calculator</h2>
+
+    <div class="inputs">
+        <div>
+            <label>Number of Cartons</label>
+            <input type="number" id="weightCartons" placeholder="Example: 25">
+        </div>
+
+        <div>
+            <label>Gross Weight per Carton (KG)</label>
+            <input type="number" id="grossPerCarton" step="0.01" placeholder="Example: 12.5">
+        </div>
     </div>
 
-    <div class="footer">
-        © 2026 Jubayer | All Rights Reserved
+    <button onclick="calculateWeight()">Calculate Gross Weight</button>
+
+    <div class="result" id="weightResult">
+        Total Gross Weight: 0 KG
     </div>
+</div>
+
+
+<div class="card">
+    <h2>🔢 Carton Range Generator</h2>
+
+    <div class="inputs">
+        <div>
+            <label>Starting Carton</label>
+            <input type="number" id="startCarton" placeholder="Example: 1">
+        </div>
+
+        <div>
+            <label>Ending Carton</label>
+            <input type="number" id="endCarton" placeholder="Example: 25">
+        </div>
+    </div>
+
+    <button onclick="generateCartons()">Generate</button>
+
+    <div class="result" id="cartonResult">
+        Carton numbers will appear here.
+    </div>
+</div>
+
+
+<div class="card">
+    <h2>🧹 Clear All</h2>
+    <button class="danger" onclick="clearAll()">Clear Everything</button>
+</div>
+
+<footer>
+    <p>Garments Data Entry Helper • Version 1</p>
+</footer>
+```
+
+</div>
+
+<script>
+
+function calculateQty() {
+
+    let cartons = Number(document.getElementById("cartons").value);
+    let pieces = Number(document.getElementById("pieces").value);
+
+    let total = cartons * pieces;
+
+    document.getElementById("qtyResult").innerText =
+        "Total Qty: " + total + " pcs";
+}
+
+
+function calculateWeight() {
+
+    let cartons = Number(document.getElementById("weightCartons").value);
+    let gross = Number(document.getElementById("grossPerCarton").value);
+
+    let total = cartons * gross;
+
+    document.getElementById("weightResult").innerText =
+        "Total Gross Weight: " + total.toFixed(2) + " KG";
+}
+
+
+function generateCartons() {
+
+    let start = Number(document.getElementById("startCarton").value);
+    let end = Number(document.getElementById("endCarton").value);
+
+    let result = "";
+
+    for (let i = start; i <= end; i++) {
+        result += i + " ";
+    }
+
+    document.getElementById("cartonResult").innerText =
+        "Cartons: " + result;
+}
+
+
+function clearAll() {
+
+    document.querySelectorAll("input").forEach(function(input) {
+        input.value = "";
+    });
+
+    document.getElementById("qtyResult").innerText =
+        "Total Qty: 0 pcs";
+
+    document.getElementById("weightResult").innerText =
+        "Total Gross Weight: 0 KG";
+
+    document.getElementById("cartonResult").innerText =
+        "Carton numbers will appear here.";
+}
+
+</script>
 
 </body>
 </html>
