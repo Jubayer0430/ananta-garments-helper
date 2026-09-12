@@ -266,67 +266,81 @@
         </div>
 
     </div>
-</div>PO Sheet Generator</h2>
+<div class="card">
+    <h2>📋 PO SHEET GENERATOR</h2>
 
-    <div class="inputs">
+<div class="inputs">
 
-        <div>
-            <label>PO No</label>
-            <input type="text" id="poNo" placeholder="Example: PO-1001">
-        </div>
+```
+<div>
+    <label>PO No</label>
+    <input type="text" id="poGenNo" placeholder="Example: PO-1001">
+</div>
 
-        <div>
-            <label>Buyer</label>
-            <input type="text" id="buyer" placeholder="Example: H&M">
-        </div>
+<div>
+    <label>Buyer</label>
+    <input type="text" id="poGenBuyer" placeholder="Example: H&M">
+</div>
 
-        <div>
-            <label>Style</label>
-            <input type="text" id="style" placeholder="Example: ST-2501">
-        </div>
+<div>
+    <label>Style</label>
+    <input type="text" id="poGenStyle" placeholder="Example: ST-2501">
+</div>
 
-        <div>
-            <label>Color</label>
-            <input type="text" id="color" placeholder="Example: Black">
-        </div>
+<div>
+    <label>Color</label>
+    <input type="text" id="poGenColor" placeholder="Example: Black">
+</div>
+```
 
-    </div>
+</div>
+
 <div style="margin-top: 15px;">
 
-    <div class="inputs">
+```
+<div class="inputs">
 
-        <div>
-            <label>Starting Carton</label>
-            <input type="number" id="poStartCarton" placeholder="Example: 1">
-        </div>
+    <div>
+        <label>Starting Carton</label>
+        <input type="number" id="poStartCarton" placeholder="Example: 1">
+    </div>
 
-        <div>
-            <label>Ending Carton</label>
-            <input type="number" id="poEndCarton" placeholder="Example: 10">
-        </div>
+    <div>
+        <label>Ending Carton</label>
+        <input type="number" id="poEndCarton" placeholder="Example: 10">
+    </div>
 
-        <div>
-            <label>Qty per Carton</label>
-            <input type="number" id="poQtyPerCarton" placeholder="Example: 20">
-        </div>
+    <div>
+        <label>Qty per Carton</label>
+        <input type="number" id="poQtyPerCarton" placeholder="Example: 20">
+    </div>
 
-        <div>
-            <label>Net WT per Carton (KG)</label>
-            <input type="number" id="poNetWT" step="0.01" placeholder="Example: 10.50">
-        </div>
+    <div>
+        <label>Net WT per Carton (KG)</label>
+        <input type="number" id="poNetWT" step="0.01" placeholder="Example: 10.50">
+    </div>
 
-        <div>
-            <label>Gross WT per Carton (KG)</label>
-            <input type="number" id="poGrossWT" step="0.01" placeholder="Example: 12.00">
-        </div>
-
+    <div>
+        <label>Gross WT per Carton (KG)</label>
+        <input type="number" id="poGrossWT" step="0.01" placeholder="Example: 12.00">
     </div>
 
 </div>
-    <button onclick="generatePO()">
-        Generate PO
-    </button>
+```
 
+</div>
+
+<button onclick="generatePO()">
+    Generate PO
+</button>
+
+<div class="result" id="poResult">
+    PO result will appear here.
+</div>
+
+<div class="result" id="poResult">
+    PO result will appear here.
+</div>
    <div class="card">
     <h2>📋 PURCHASE ORDER INFORMATION</h2>
 <div class="card">
@@ -570,9 +584,8 @@
 <script>
 
 function calculateQty() {
-
-    let cartons = Number(document.getElementById("cartons").value);
-    let pieces = Number(document.getElementById("pieces").value);
+    let cartons = Number(document.getElementById("cartons").value) || 0;
+    let pieces = Number(document.getElementById("pieces").value) || 0;
 
     let total = cartons * pieces;
 
@@ -582,9 +595,8 @@ function calculateQty() {
 
 
 function calculateWeight() {
-
-    let cartons = Number(document.getElementById("weightCartons").value);
-    let gross = Number(document.getElementById("grossPerCarton").value);
+    let cartons = Number(document.getElementById("weightCartons").value) || 0;
+    let gross = Number(document.getElementById("grossPerCarton").value) || 0;
 
     let total = cartons * gross;
 
@@ -594,47 +606,41 @@ function calculateWeight() {
 
 
 function generateCartons() {
-
     let start = Number(document.getElementById("startCarton").value);
     let end = Number(document.getElementById("endCarton").value);
 
-    let result = "";
+    if (!start || !end || end < start) {
+        document.getElementById("cartonResult").innerText =
+            "Please enter a valid carton range.";
+        return;
+    }
+
+    let result = [];
 
     for (let i = start; i <= end; i++) {
-        result += i + " ";
+        result.push(i);
     }
 
     document.getElementById("cartonResult").innerText =
-        "Cartons: " + result;
+        "Cartons: " + result.join(", ");
 }
 
 
-function clearAll() {
-
-    document.querySelectorAll("input").forEach(function(input) {
-        input.value = "";
-    });
-
-    document.getElementById("qtyResult").innerText =
-        "Total Qty: 0 pcs";
-
-    document.getElementById("weightResult").innerText =
-        "Total Gross Weight: 0 KG";
-
-    document.getElementById("cartonResult").innerText =
-        "Carton numbers will appear here.";
-}
 function checkMissingCartons() {
-
     let start = Number(document.getElementById("missingStart").value);
     let end = Number(document.getElementById("missingEnd").value);
     let cartonText = document.getElementById("cartonList").value;
 
+    if (!start || !end || end < start) {
+        document.getElementById("missingResult").innerText =
+            "Please enter a valid carton range.";
+        return;
+    }
+
     let existing = cartonText
         .split(",")
-        .map(function(item) {
-            return Number(item.trim());
-        });
+        .map(item => Number(item.trim()))
+        .filter(item => !isNaN(item));
 
     let missing = [];
 
@@ -651,34 +657,113 @@ function checkMissingCartons() {
         document.getElementById("missingResult").innerText =
             "❌ Missing Carton: " + missing.join(", ");
     }
-}function generatePO() {
+}
 
-    let poNo = document.getElementById("poNo").value;
-    let buyer = document.getElementById("buyer").value;
-    let style = document.getElementById("style").value;
-    let color = document.getElementById("color").value;
 
-    let start = Number(document.getElementById("poStartCarton").value);
-    let end = Number(document.getElementById("poEndCarton").value);
-    let qtyPerCarton = Number(document.getElementById("poQtyPerCarton").value);
-    let netWT = Number(document.getElementById("poNetWT").value);
-    let grossWT = Number(document.getElementById("poGrossWT").value);
+/* =========================
+   PO GENERATOR
+========================= */
 
-    let totalCartons = end - start + 1;
-    let totalQty = totalCartons * qtyPerCarton;
-    let totalNetWT = totalCartons * netWT;
-    let totalGrossWT = totalCartons * grossWT;
+function generatePO() {
 
+```
+const poNo = document.getElementById("poGenNo").value.trim();
+const buyer = document.getElementById("poGenBuyer").value.trim();
+const style = document.getElementById("poGenStyle").value.trim();
+const color = document.getElementById("poGenColor").value.trim();
+
+const startCarton = parseInt(document.getElementById("poStartCarton").value);
+const endCarton = parseInt(document.getElementById("poEndCarton").value);
+const qtyPerCarton = parseInt(document.getElementById("poQtyPerCarton").value);
+const netWT = parseFloat(document.getElementById("poNetWT").value);
+const grossWT = parseFloat(document.getElementById("poGrossWT").value);
+
+if (
+    !poNo ||
+    !buyer ||
+    !style ||
+    !color ||
+    isNaN(startCarton) ||
+    isNaN(endCarton) ||
+    isNaN(qtyPerCarton) ||
+    isNaN(netWT) ||
+    isNaN(grossWT)
+) {
     document.getElementById("poResult").innerHTML =
-        "PO No: " + poNo + "<br>" +
-        "Buyer: " + buyer + "<br>" +
-        "Style: " + style + "<br>" +
-        "Color: " + color + "<br><br>" +
-        "Total Cartons: " + totalCartons + "<br>" +
-        "Total Qty: " + totalQty + " pcs<br>" +
-        "Total Net WT: " + totalNetWT.toFixed(2) + " KG<br>" +
-        "Total Gross WT: " + totalGrossWT.toFixed(2) + " KG";
-}function calculatePacking() {
+        "⚠️ Please fill in all PO information.";
+    return;
+}
+
+if (endCarton < startCarton) {
+    document.getElementById("poResult").innerHTML =
+        "⚠️ Ending carton must be greater than or equal to starting carton.";
+    return;
+}
+
+const cartonCount = endCarton - startCarton + 1;
+const totalQty = cartonCount * qtyPerCarton;
+const totalNetWT = cartonCount * netWT;
+const totalGrossWT = cartonCount * grossWT;
+
+let html = `
+    <h3>📋 PURCHASE ORDER</h3>
+
+    <p><strong>PO No:</strong> ${poNo}</p>
+    <p><strong>Buyer:</strong> ${buyer}</p>
+    <p><strong>Style:</strong> ${style}</p>
+    <p><strong>Color:</strong> ${color}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Carton No</th>
+                <th>Qty / Carton</th>
+                <th>Total Qty</th>
+                <th>Net WT (KG)</th>
+                <th>Gross WT (KG)</th>
+            </tr>
+        </thead>
+        <tbody>
+`;
+
+for (let i = startCarton; i <= endCarton; i++) {
+
+    html += `
+        <tr>
+            <td>${i}</td>
+            <td>${qtyPerCarton}</td>
+            <td>${qtyPerCarton}</td>
+            <td>${netWT.toFixed(2)}</td>
+            <td>${grossWT.toFixed(2)}</td>
+        </tr>
+    `;
+}
+
+html += `
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th colspan="2">GRAND TOTAL</th>
+                <th>${totalQty}</th>
+                <th>${totalNetWT.toFixed(2)}</th>
+                <th>${totalGrossWT.toFixed(2)}</th>
+            </tr>
+        </tfoot>
+    </table>
+`;
+
+document.getElementById("poResult").innerHTML = html;
+```
+
+}
+
+
+/* =========================
+   BASIC PACKING LIST
+========================= */
+
+function calculatePacking() {
 
     let rows = document.querySelectorAll("#packingBody tr");
 
@@ -713,7 +798,6 @@ function checkMissingCartons() {
 function addPackingRow() {
 
     let tableBody = document.getElementById("packingBody");
-
     let rowCount = tableBody.rows.length + 1;
 
     let row = document.createElement("tr");
@@ -745,7 +829,15 @@ function addPackingRow() {
     `;
 
     tableBody.appendChild(row);
-}function calculateProfessionalPL() {
+}
+
+
+/* =========================
+   PROFESSIONAL PACKING LIST
+========================= */
+
+function calculateProfessionalPL() {
+
     let rows = document.querySelectorAll("#professionalPackingBody tr");
 
     let grandQty = 0;
@@ -753,6 +845,7 @@ function addPackingRow() {
     let grandGross = 0;
 
     rows.forEach(function(row) {
+
         let qty = Number(row.querySelector(".plQty").value) || 0;
         let net = Number(row.querySelector(".plNet").value) || 0;
         let gross = Number(row.querySelector(".plGross").value) || 0;
@@ -767,7 +860,11 @@ function addPackingRow() {
     document.getElementById("plGrandQty").innerText = grandQty;
     document.getElementById("plGrandNet").innerText = grandNet.toFixed(2);
     document.getElementById("plGrandGross").innerText = grandGross.toFixed(2);
-}function addProfessionalPackingRow() {
+}
+
+
+function addProfessionalPackingRow() {
+
     let tableBody = document.getElementById("professionalPackingBody");
 
     let rowCount = tableBody.rows.length + 1;
@@ -800,14 +897,27 @@ function addPackingRow() {
         </td>
 
         <td style="padding:8px; border:1px solid #ccc;">
-            <button type="button" onclick="this.closest('tr').remove(); calculateProfessionalPL();">
+            <button type="button"
+                onclick="this.closest('tr').remove(); calculateProfessionalPL();">
                 🗑️
             </button>
         </td>
     `;
 
     tableBody.appendChild(row);
-}function generateProfessionalPL() {
+
+    calculateProfessionalPL();
+}
+
+
+/* =========================
+   GENERATE PROFESSIONAL PL
+========================= */
+
+function generateProfessionalPL() {
+
+    calculateProfessionalPL();
+
     let company = document.getElementById("companyName").value || "—";
     let buyer = document.getElementById("plBuyer").value || "—";
     let po = document.getElementById("plPO").value || "—";
@@ -817,11 +927,14 @@ function addPackingRow() {
     let destination = document.getElementById("plDestination").value || "—";
     let origin = document.getElementById("plOrigin").value || "—";
 
-    let rows = document.querySelectorAll("#professionalPackingBody tr");
+    let rows = document.querySelectorAll(
+        "#professionalPackingBody tr"
+    );
 
     let tableRows = "";
 
     rows.forEach(function(row) {
+
         let carton = row.querySelector(".plCarton").value || "";
         let size = row.querySelector(".plSize").value || "";
         let qty = Number(row.querySelector(".plQty").value) || 0;
@@ -840,41 +953,80 @@ function addPackingRow() {
         `;
     });
 
-    let grandQty = document.getElementById("plGrandQty").innerText;
-    let grandNet = document.getElementById("plGrandNet").innerText;
-    let grandGross = document.getElementById("plGrandGross").innerText;
+    let grandQty =
+        document.getElementById("plGrandQty").innerText;
+
+    let grandNet =
+        document.getElementById("plGrandNet").innerText;
+
+    let grandGross =
+        document.getElementById("plGrandGross").innerText;
 
     document.getElementById("professionalPLResult").innerHTML = `
-        <div id="printPackingList" style="
-            background:white;
-            padding:35px;
-            border:1px solid #ccc;
-            font-family:Arial,sans-serif;
-            color:#111;
-        ">
 
-            <div style="text-align:center; margin-bottom:25px;">
-                <h1 style="margin-bottom:5px;">${company}</h1>
-                <h2 style="margin:0;">PACKING LIST</h2>
+        <div id="printPackingList"
+            style="
+                background:white;
+                padding:35px;
+                border:1px solid #ccc;
+                font-family:Arial,sans-serif;
+                color:#111;
+            ">
+
+            <div style="text-align:center;margin-bottom:25px;">
+                <h1 style="margin-bottom:5px;">
+                    ${company}
+                </h1>
+
+                <h2 style="margin:0;">
+                    PACKING LIST
+                </h2>
             </div>
 
-            <table style="width:100%; margin-bottom:20px; border-collapse:collapse;">
+            <table style="
+                width:100%;
+                margin-bottom:20px;
+                border-collapse:collapse;
+            ">
+
                 <tr>
-                    <td style="padding:8px;"><b>BUYER:</b> ${buyer}</td>
-                    <td style="padding:8px;"><b>PO NO:</b> ${po}</td>
+                    <td style="padding:8px;">
+                        <b>BUYER:</b> ${buyer}
+                    </td>
+
+                    <td style="padding:8px;">
+                        <b>PO NO:</b> ${po}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td style="padding:8px;"><b>STYLE NO:</b> ${style}</td>
-                    <td style="padding:8px;"><b>COLOR:</b> ${color}</td>
+                    <td style="padding:8px;">
+                        <b>STYLE NO:</b> ${style}
+                    </td>
+
+                    <td style="padding:8px;">
+                        <b>COLOR:</b> ${color}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td style="padding:8px;"><b>SHIPMENT DATE:</b> ${shipmentDate}</td>
-                    <td style="padding:8px;"><b>DESTINATION:</b> ${destination}</td>
+                    <td style="padding:8px;">
+                        <b>SHIPMENT DATE:</b> ${shipmentDate}
+                    </td>
+
+                    <td style="padding:8px;">
+                        <b>DESTINATION:</b> ${destination}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td style="padding:8px;"><b>COUNTRY OF ORIGIN:</b> ${origin}</td>
+                    <td style="padding:8px;">
+                        <b>COUNTRY OF ORIGIN:</b> ${origin}
+                    </td>
+
                     <td style="padding:8px;"></td>
                 </tr>
+
             </table>
 
             <table style="
@@ -882,14 +1034,37 @@ function addPackingRow() {
                 border-collapse:collapse;
                 text-align:center;
             ">
+
                 <thead>
-                    <tr style="background:#1f2937;color:white;">
-                        <th style="padding:10px;border:1px solid #333;">CARTON NO</th>
-                        <th style="padding:10px;border:1px solid #333;">SIZE</th>
-                        <th style="padding:10px;border:1px solid #333;">QTY / CARTON</th>
-                        <th style="padding:10px;border:1px solid #333;">TOTAL QTY</th>
-                        <th style="padding:10px;border:1px solid #333;">NET WT (KG)</th>
-                        <th style="padding:10px;border:1px solid #333;">GROSS WT (KG)</th>
+                    <tr style="
+                        background:#1f2937;
+                        color:white;
+                    ">
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            CARTON NO
+                        </th>
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            SIZE
+                        </th>
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            QTY / CARTON
+                        </th>
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            TOTAL QTY
+                        </th>
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            NET WT (KG)
+                        </th>
+
+                        <th style="padding:10px;border:1px solid #333;">
+                            GROSS WT (KG)
+                        </th>
+
                     </tr>
                 </thead>
 
@@ -898,21 +1073,37 @@ function addPackingRow() {
                 </tbody>
 
                 <tfoot>
-                    <tr style="font-weight:bold;background:#eef2ff;">
-                        <td colspan="3" style="padding:10px;border:1px solid #333;text-align:right;">
+
+                    <tr style="
+                        font-weight:bold;
+                        background:#eef2ff;
+                    ">
+
+                        <td colspan="3"
+                            style="
+                                padding:10px;
+                                border:1px solid #333;
+                                text-align:right;
+                            ">
                             GRAND TOTAL
                         </td>
+
                         <td style="padding:10px;border:1px solid #333;">
                             ${grandQty}
                         </td>
+
                         <td style="padding:10px;border:1px solid #333;">
                             ${grandNet}
                         </td>
+
                         <td style="padding:10px;border:1px solid #333;">
                             ${grandGross}
                         </td>
+
                     </tr>
+
                 </tfoot>
+
             </table>
 
             <div style="
@@ -921,6 +1112,7 @@ function addPackingRow() {
                 margin-top:70px;
                 text-align:center;
             ">
+
                 <div>
                     ____________________<br>
                     Prepared By
@@ -935,48 +1127,193 @@ function addPackingRow() {
                     ____________________<br>
                     Authorized Signature
                 </div>
+
             </div>
 
         </div>
 
-        <div style="text-align:center;margin-top:20px;display:flex;justify-content:center;gap:10px;">
+        <div style="
+            text-align:center;
+            margin-top:20px;
+            display:flex;
+            justify-content:center;
+            gap:10px;
+        ">
 
-    <button type="button" onclick="printPackingList()">
-        🖨️ Print / Save PDF
-    </button>
+            <button type="button"
+                onclick="printPackingList()">
+                🖨️ Print / Save PDF
+            </button>
 
-    <button type="button" onclick="downloadPackingListExcel()">
-        📊 Download Excel
-    </button>
+            <button type="button"
+                onclick="downloadPackingListExcel()">
+                📊 Download Excel
+            </button>
 
-</div>
+        </div>
     `;
-}function downloadPackingListExcel() {
+}
 
-    let company = document.getElementById("companyName").value || "";
-    let buyer = document.getElementById("plBuyer").value || "";
-    let po = document.getElementById("plPO").value || "";
-    let style = document.getElementById("plStyle").value || "";
-    let color = document.getElementById("plColor").value || "";
-    let shipmentDate = document.getElementById("plShipmentDate").value || "";
-    let destination = document.getElementById("plDestination").value || "";
-    let origin = document.getElementById("plOrigin").value || "";
+
+/* =========================
+   PRINT / SAVE PDF
+========================= */
+
+function printPackingList() {
+
+    let content =
+        document.getElementById("printPackingList");
+
+    if (!content) {
+        alert("Please generate the Packing List first.");
+        return;
+    }
+
+    let printWindow = window.open("", "_blank");
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Packing List</title>
+
+            <style>
+
+                body {
+                    margin:0;
+                    padding:20px;
+                    font-family:Arial,sans-serif;
+                    background:white;
+                }
+
+                table {
+                    border-collapse:collapse;
+                }
+
+                @media print {
+
+                    body {
+                        padding:0;
+                    }
+
+                    @page {
+                        size:A4 landscape;
+                        margin:10mm;
+                    }
+
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+            ${content.outerHTML}
+        </body>
+
+        </html>
+    `);
+
+    printWindow.document.close();
+
+    printWindow.focus();
+
+    setTimeout(function() {
+        printWindow.print();
+    }, 500);
+}
+
+
+/* =========================
+   DOWNLOAD EXCEL
+========================= */
+
+function downloadPackingListExcel() {
+
+    if (typeof XLSX === "undefined") {
+        alert("Excel library is not loaded. Please refresh the page.");
+        return;
+    }
+
+    let company =
+        document.getElementById("companyName").value || "";
+
+    let buyer =
+        document.getElementById("plBuyer").value || "";
+
+    let po =
+        document.getElementById("plPO").value || "";
+
+    let style =
+        document.getElementById("plStyle").value || "";
+
+    let color =
+        document.getElementById("plColor").value || "";
+
+    let shipmentDate =
+        document.getElementById("plShipmentDate").value || "";
+
+    let destination =
+        document.getElementById("plDestination").value || "";
+
+    let origin =
+        document.getElementById("plOrigin").value || "";
+
+
+    let rows =
+        document.querySelectorAll(
+            "#professionalPackingBody tr"
+        );
+
 
     let excelData = [];
 
-    // COMPANY
+
+    /* ROW 1 */
     excelData.push([company]);
+
+    /* ROW 2 */
     excelData.push(["PACKING LIST"]);
+
+    /* ROW 3 */
     excelData.push([]);
 
-    // INFORMATION
-    excelData.push(["BUYER", buyer, "PO NO", po]);
-    excelData.push(["STYLE NO", style, "COLOR", color]);
-    excelData.push(["SHIPMENT DATE", shipmentDate, "DESTINATION", destination]);
-    excelData.push(["COUNTRY OF ORIGIN", origin]);
+
+    /* ROW 4 */
+    excelData.push([
+        "BUYER",
+        buyer,
+        "PO NO",
+        po
+    ]);
+
+    /* ROW 5 */
+    excelData.push([
+        "STYLE NO",
+        style,
+        "COLOR",
+        color
+    ]);
+
+    /* ROW 6 */
+    excelData.push([
+        "SHIPMENT DATE",
+        shipmentDate,
+        "DESTINATION",
+        destination
+    ]);
+
+    /* ROW 7 */
+    excelData.push([
+        "COUNTRY OF ORIGIN",
+        origin
+    ]);
+
+    /* ROW 8 */
     excelData.push([]);
 
-    // TABLE HEADER
+
+    /* ROW 9 - TABLE HEADER */
     excelData.push([
         "CARTON NO",
         "SIZE",
@@ -986,234 +1323,391 @@ function addPackingRow() {
         "GROSS WT (KG)"
     ]);
 
-    let rows = document.querySelectorAll("#professionalPackingBody tr");
+
+    /*
+       Excel:
+       Row 9 = Header
+       Row 10 = First Data
+    */
 
     let firstDataRow = 10;
 
+
     rows.forEach(function(row, index) {
 
-        let carton = row.querySelector(".plCarton").value || "";
-        let size = row.querySelector(".plSize").value || "";
+        let carton =
+            row.querySelector(".plCarton").value || "";
 
-        let qty = Number(row.querySelector(".plQty").value) || 0;
-        let net = Number(row.querySelector(".plNet").value) || 0;
-        let gross = Number(row.querySelector(".plGross").value) || 0;
+        let size =
+            row.querySelector(".plSize").value || "";
 
-        let excelRow = firstDataRow + index;
+        let qty =
+            Number(row.querySelector(".plQty").value) || 0;
+
+        let net =
+            Number(row.querySelector(".plNet").value) || 0;
+
+        let gross =
+            Number(row.querySelector(".plGross").value) || 0;
+
+
+        let excelRow =
+            firstDataRow + index;
+
 
         excelData.push([
+
             carton,
+
             size,
+
             qty,
 
-            // TOTAL QTY formula
-            { t: "n", f: `C${excelRow}` },
+            /*
+               TOTAL QTY
+               Formula = Qty / Carton
+            */
+
+            {
+                t: "n",
+                f: `C${excelRow}`
+            },
 
             net,
+
             gross
+
         ]);
+
     });
 
-    // GRAND TOTAL ROW
-    let lastDataRow = firstDataRow + rows.length - 1;
-    let grandTotalRow = lastDataRow + 2;
+
+    /*
+       GRAND TOTAL
+    */
+
+    let lastDataRow =
+        firstDataRow + rows.length - 1;
+
+    let grandTotalRow =
+        lastDataRow + 2;
+
 
     excelData.push([]);
 
+
     excelData.push([
+
         "GRAND TOTAL",
-        "",
+
         "",
 
-        // GRAND TOTAL QTY
+        "",
+
+
         {
             t: "n",
-            f: `SUM(D${firstDataRow}:D${lastDataRow})`
+            f:
+                `SUM(D${firstDataRow}:D${lastDataRow})`
         },
 
-        // GRAND NET WT
+
         {
             t: "n",
-            f: `SUM(E${firstDataRow}:E${lastDataRow})`
+            f:
+                `SUM(E${firstDataRow}:E${lastDataRow})`
         },
 
-        // GRAND GROSS WT
+
         {
             t: "n",
-            f: `SUM(F${firstDataRow}:F${lastDataRow})`
+            f:
+                `SUM(F${firstDataRow}:F${lastDataRow})`
         }
+
     ]);
 
-    // CREATE WORKSHEET
-    let worksheet = XLSX.utils.aoa_to_sheet(excelData);
-// PROFESSIONAL EXCEL FORMAT
 
-// Merge Company Name
-worksheet["!merges"] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
-    { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } }
-];
+    /* CREATE WORKSHEET */
 
-// Column Width
-worksheet["!cols"] = [
-    { wch: 18 },
-    { wch: 15 },
-    { wch: 16 },
-    { wch: 16 },
-    { wch: 17 },
-    { wch: 18 }
-];
+    let worksheet =
+        XLSX.utils.aoa_to_sheet(excelData);
 
-// Row Height
-worksheet["!rows"] = [
-    { hpt: 28 },
-    { hpt: 32 }
-];
 
-// Print Setup
-worksheet["!pageSetup"] = {
-    orientation: "landscape",
-    paperSize: 9,
-    fitToWidth: 1,
-    fitToHeight: 0
-};
+    /* MERGE TITLES */
 
-// Print Area
-worksheet["!printArea"] = "A1:F" + (excelData.length);
+    worksheet["!merges"] = [
 
-// Freeze Header
-worksheet["!freeze"] = {
-    xSplit: 0,
-    ySplit: 8
-};
-// TITLE & HEADER STYLING
-
-// Company Name
-if (worksheet["A1"]) {
-    worksheet["A1"].s = {
-        font: {
-            bold: true,
-            sz: 16
+        {
+            s: { r:0, c:0 },
+            e: { r:0, c:5 }
         },
-        alignment: {
-            horizontal: "center",
-            vertical: "center"
+
+        {
+            s: { r:1, c:0 },
+            e: { r:1, c:5 }
         }
-    };
-}
 
-// Packing List Title
-if (worksheet["A2"]) {
-    worksheet["A2"].s = {
-        font: {
-            bold: true,
-            sz: 18
-        },
-        alignment: {
-            horizontal: "center",
-            vertical: "center"
-        }
-    };
-}
-
-// Table Header Row
-for (let col = 0; col < 6; col++) {
-
-    let cell = XLSX.utils.encode_cell({
-        r: 8,
-        c: col
-    });
-
-    if (worksheet[cell]) {
-        worksheet[cell].s = {
-            font: {
-                bold: true,
-                sz: 11
-            },
-            alignment: {
-                horizontal: "center",
-                vertical: "center",
-                wrapText: true
-            },
-            border: {
-                top: { style: "thin" },
-                bottom: { style: "thin" },
-                left: { style: "thin" },
-                right: { style: "thin" }
-            }
-        };
-    }
-}// TABLE BODY FORMATTING
-
-let tableStartRow = 10;
-let lastDataRow = tableStartRow + rows.length - 1;
-
-for (let R = tableStartRow; R <= lastDataRow; R++) {
-
-    for (let C = 0; C < 6; C++) {
-
-        let cellAddress = XLSX.utils.encode_cell({
-            r: R - 1,
-            c: C
-        });
-
-        if (!worksheet[cellAddress]) continue;
-
-        worksheet[cellAddress].s = {
-            alignment: {
-                horizontal: "center",
-                vertical: "center"
-            },
-            border: {
-                top: { style: "thin" },
-                bottom: { style: "thin" },
-                left: { style: "thin" },
-                right: { style: "thin" }
-            }
-        };
-    }
-}// GRAND TOTAL FORMATTING
-
-let grandTotalExcelRow = lastDataRow + 2;
-
-for (let C = 0; C < 6; C++) {
-
-    let cellAddress = XLSX.utils.encode_cell({
-        r: grandTotalExcelRow - 1,
-        c: C
-    });
-
-    if (!worksheet[cellAddress]) continue;
-
-    worksheet[cellAddress].s = {
-        font: {
-            bold: true,
-            sz: 11
-        },
-        alignment: {
-            horizontal: "center",
-            vertical: "center"
-        },
-        border: {
-            top: { style: "medium" },
-            bottom: { style: "medium" },
-            left: { style: "thin" },
-            right: { style: "thin" }
-        }
-    };
-}
-    // COLUMN WIDTH
-    worksheet["!cols"] = [
-        { wch: 18 },
-        { wch: 15 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 20 }
     ];
 
-    // CREATE WORKBOOK
-    let workbook = XLSX.utils.book_new();
+
+    /* COLUMN WIDTH */
+
+    worksheet["!cols"] = [
+
+        { wch:18 },
+        { wch:15 },
+        { wch:18 },
+        { wch:18 },
+        { wch:18 },
+        { wch:20 }
+
+    ];
+
+
+    /* ROW HEIGHT */
+
+    worksheet["!rows"] = [
+
+        { hpt:28 },
+        { hpt:32 }
+
+    ];
+
+
+    /* PAGE SETUP */
+
+    worksheet["!pageSetup"] = {
+
+        orientation:"landscape",
+        paperSize:9,
+        fitToWidth:1,
+        fitToHeight:0
+
+    };
+
+
+    /* PRINT AREA */
+
+    worksheet["!printArea"] =
+        "A1:F" + excelData.length;
+
+
+    /* FREEZE */
+
+    worksheet["!freeze"] = {
+
+        xSplit:0,
+        ySplit:8
+
+    };
+
+
+    /* COMPANY TITLE */
+
+    if (worksheet["A1"]) {
+
+        worksheet["A1"].s = {
+
+            font: {
+                bold:true,
+                sz:16
+            },
+
+            alignment: {
+                horizontal:"center",
+                vertical:"center"
+            }
+
+        };
+
+    }
+
+
+    /* PACKING LIST TITLE */
+
+    if (worksheet["A2"]) {
+
+        worksheet["A2"].s = {
+
+            font: {
+                bold:true,
+                sz:18
+            },
+
+            alignment: {
+                horizontal:"center",
+                vertical:"center"
+            }
+
+        };
+
+    }
+
+
+    /* HEADER STYLE */
+
+    for (let col = 0; col < 6; col++) {
+
+        let cell =
+            XLSX.utils.encode_cell({
+                r:8,
+                c:col
+            });
+
+        if (worksheet[cell]) {
+
+            worksheet[cell].s = {
+
+                font: {
+                    bold:true,
+                    sz:11
+                },
+
+                alignment: {
+
+                    horizontal:"center",
+                    vertical:"center",
+                    wrapText:true
+
+                },
+
+                border: {
+
+                    top:{style:"thin"},
+                    bottom:{style:"thin"},
+                    left:{style:"thin"},
+                    right:{style:"thin"}
+
+                }
+
+            };
+
+        }
+
+    }
+
+
+    /* BODY STYLE */
+
+    let tableStartRow = 10;
+
+    let lastRow =
+        tableStartRow + rows.length - 1;
+
+
+    for (
+        let R = tableStartRow;
+        R <= lastRow;
+        R++
+    ) {
+
+        for (
+            let C = 0;
+            C < 6;
+            C++
+        ) {
+
+            let address =
+                XLSX.utils.encode_cell({
+
+                    r:R - 1,
+                    c:C
+
+                });
+
+
+            if (!worksheet[address]) {
+                continue;
+            }
+
+
+            worksheet[address].s = {
+
+                alignment: {
+
+                    horizontal:"center",
+                    vertical:"center"
+
+                },
+
+                border: {
+
+                    top:{style:"thin"},
+                    bottom:{style:"thin"},
+                    left:{style:"thin"},
+                    right:{style:"thin"}
+
+                }
+
+            };
+
+        }
+
+    }
+
+
+    /* GRAND TOTAL STYLE */
+
+    let grandExcelRow =
+        lastRow + 2;
+
+
+    for (
+        let C = 0;
+        C < 6;
+        C++
+    ) {
+
+        let address =
+            XLSX.utils.encode_cell({
+
+                r:grandExcelRow - 1,
+                c:C
+
+            });
+
+
+        if (!worksheet[address]) {
+            continue;
+        }
+
+
+        worksheet[address].s = {
+
+            font: {
+
+                bold:true,
+                sz:11
+
+            },
+
+            alignment: {
+
+                horizontal:"center",
+                vertical:"center"
+
+            },
+
+            border: {
+
+                top:{style:"medium"},
+                bottom:{style:"medium"},
+                left:{style:"thin"},
+                right:{style:"thin"}
+
+            }
+
+        };
+
+    }
+
+
+    /* CREATE WORKBOOK */
+
+    let workbook =
+        XLSX.utils.book_new();
+
 
     XLSX.utils.book_append_sheet(
         workbook,
@@ -1221,14 +1715,68 @@ for (let C = 0; C < 6; C++) {
         "Packing List"
     );
 
-    // FILE NAME
-    let fileName = po
-        ? po.replace(/[\\/:*?"<>|]/g, "_") + "_Packing_List.xlsx"
+
+    /* FILE NAME */
+
+    let fileName =
+        po
+        ? po.replace(/[\\/:*?"<>|]/g,"_")
+          + "_Packing_List.xlsx"
         : "Packing_List.xlsx";
 
-    // DOWNLOAD
-    XLSX.writeFile(workbook, fileName);
+
+    /* DOWNLOAD */
+
+    XLSX.writeFile(
+        workbook,
+        fileName
+    );
+
 }
+
+
+/* =========================
+   CLEAR ALL
+========================= */
+
+function clearAll() {
+
+    document.querySelectorAll("input").forEach(function(input) {
+        input.value = "";
+    });
+
+    document.getElementById("qtyResult").innerText =
+        "Total Qty: 0 pcs";
+
+    document.getElementById("weightResult").innerText =
+        "Total Gross Weight: 0 KG";
+
+    document.getElementById("cartonResult").innerText =
+        "Carton numbers will appear here.";
+
+    document.getElementById("missingResult").innerText =
+        "Missing cartons will appear here.";
+
+    let poResult =
+        document.getElementById("poResult");
+
+    if (poResult) {
+        poResult.innerHTML =
+            "PO result will appear here.";
+    }
+
+    document.getElementById("grandQty").innerText = "0";
+    document.getElementById("grandNet").innerText = "0.00";
+    document.getElementById("grandGross").innerText = "0.00";
+
+    document.getElementById("plGrandQty").innerText = "0";
+    document.getElementById("plGrandNet").innerText = "0.00";
+    document.getElementById("plGrandGross").innerText = "0.00";
+
+    document.getElementById("professionalPLResult").innerHTML = "";
+
+}
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 </body>
