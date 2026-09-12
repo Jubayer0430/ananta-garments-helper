@@ -1,1781 +1,440 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garments Data Entry Helper</title>
-
-```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garments Data Entry Helper</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-
-    body {
-        background: #f4f6f8;
-        color: #222;
-        padding: 20px;
-    }
-
-    .container {
-        max-width: 900px;
-        margin: auto;
-    }
-
-    header {
-        background: #1f2937;
-        color: white;
-        padding: 25px;
-        border-radius: 12px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    header h1 {
-        margin-bottom: 8px;
-    }
-
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-        margin-bottom: 15px;
-        color: #1f2937;
-    }
-
-    .inputs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 6px;
-    }
-
-    input {
-        width: 100%;
-        padding: 11px;
-        border: 1px solid #ccc;
-        border-radius: 7px;
-        font-size: 16px;
-    }
-
-    button {
-        margin-top: 15px;
-        padding: 11px 18px;
-        border: none;
-        border-radius: 7px;
-        background: #2563eb;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        opacity: 0.9;
-    }
-
-    .result {
-        margin-top: 15px;
-        padding: 15px;
-        background: #eef2ff;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .danger {
-        background: #dc2626;
-    }
-
-    footer {
-        text-align: center;
-        margin-top: 25px;
-        color: #666;
-    }
-
-    @media (max-width: 600px) {
-        .inputs {
-            grid-template-columns: 1fr;
-        }
-
-        body {
-            padding: 10px;
-        }
-    }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f6f8;color:#222;padding:20px}
+.container{max-width:1100px;margin:auto}
+header{background:#1f2937;color:#fff;padding:25px;border-radius:12px;text-align:center;margin-bottom:20px}
+.card{background:#fff;padding:20px;border-radius:12px;margin-bottom:20px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.card h2{margin-bottom:15px;color:#1f2937}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+label{font-weight:bold;display:block;margin-bottom:6px}
+input{width:100%;padding:11px;border:1px solid #ccc;border-radius:7px;font-size:16px}
+input[readonly]{background:#f1f5f9;color:#555}
+button{margin-top:15px;padding:11px 18px;border:0;border-radius:7px;background:#2563eb;color:#fff;font-size:16px;cursor:pointer}
+button:hover{opacity:.9}.danger{background:#dc2626}.small{padding:7px 10px;font-size:13px}
+.result{margin-top:15px;padding:15px;background:#eef2ff;border-radius:8px;font-size:17px;min-height:45px}
+.table-wrap{overflow-x:auto}.data-table{width:100%;border-collapse:collapse;min-width:900px}
+.data-table th,.data-table td{padding:8px;border:1px solid #ccc}.data-table th{background:#1f2937;color:#fff}
+.data-table input{min-width:100px}
+.print-area{background:#fff;padding:35px;border:1px solid #ccc;margin-top:20px}
+.print-title{text-align:center;margin-bottom:25px}.print-title h1{margin-bottom:5px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.output-table{width:100%;border-collapse:collapse;text-align:center}
+.output-table th,.output-table td{border:1px solid #333;padding:10px}.output-table th{background:#1f2937;color:#fff}
+.output-table tfoot{font-weight:bold;background:#eef2ff}
+.signatures{display:flex;justify-content:space-between;text-align:center;margin-top:70px}
+.action-row{text-align:center;display:flex;justify-content:center;gap:10px}
+footer{text-align:center;margin-top:25px;color:#666}
+@media(max-width:700px){body{padding:10px}.inputs{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.signatures{gap:20px;flex-wrap:wrap}}
+@media print{body{background:#fff;padding:0}.print-area{border:0}}
 </style>
-```
-
 </head>
-
 <body>
-
 <div class="container">
-
-```
-<header>
-    <h1>Garments Data Entry Helper</h1>
-    <p>Useful tools for PO & Packing List work</p>
-</header>
+<header><h1>Garments Data Entry Helper</h1><p>Useful tools for PO & Packing List work</p></header>
 
 <div class="card">
-    <h2>📦 Carton Calculator</h2>
-
-    <div class="inputs">
-        <div>
-            <label>Number of Cartons</label>
-            <input type="number" id="cartons" placeholder="Example: 25">
-        </div>
-
-        <div>
-            <label>Pieces per Carton</label>
-            <input type="number" id="pieces" placeholder="Example: 20">
-        </div>
-    </div>
-
-    <button onclick="calculateQty()">Calculate Total Qty</button>
-
-    <div class="result" id="qtyResult">
-        Total Qty: 0 pcs
-    </div>
-</div>
-
-
-<div class="card">
-    <h2>⚖️ Weight Calculator</h2>
-
-    <div class="inputs">
-        <div>
-            <label>Number of Cartons</label>
-            <input type="number" id="weightCartons" placeholder="Example: 25">
-        </div>
-
-        <div>
-            <label>Gross Weight per Carton (KG)</label>
-            <input type="number" id="grossPerCarton" step="0.01" placeholder="Example: 12.5">
-        </div>
-    </div>
-
-    <button onclick="calculateWeight()">Calculate Gross Weight</button>
-
-    <div class="result" id="weightResult">
-        Total Gross Weight: 0 KG
-    </div>
-</div>
-
-
-<div class="card">
-    <h2>🔢 Carton Range Generator</h2>
-
-    <div class="inputs">
-        <div>
-            <label>Starting Carton</label>
-            <input type="number" id="startCarton" placeholder="Example: 1">
-        </div>
-
-        <div>
-            <label>Ending Carton</label>
-            <input type="number" id="endCarton" placeholder="Example: 25">
-        </div>
-    </div>
-
-    <button onclick="generateCartons()">Generate</button>
-
-    <div class="result" id="cartonResult">
-        Carton numbers will appear here.
-    </div>
-</div>
-
-<div class="card">
-    <h2>❌ Missing Carton Checker</h2>
-
-    <div class="inputs">
-        <div>
-            <label>Starting Carton</label>
-            <input type="number" id="missingStart" placeholder="Example: 1">
-        </div>
-
-        <div>
-            <label>Ending Carton</label>
-            <input type="number" id="missingEnd" placeholder="Example: 25">
-        </div>
-    </div>
-
-    <div style="margin-top: 15px;">
-        <label>Existing Cartons</label>
-        <input
-            type="text"
-            id="cartonList"
-            placeholder="Example: 1,2,3,5,6,8,9,10"
-        >
-    </div>
-
-    <button onclick="checkMissingCartons()">
-        Check Missing Cartons
-    </button>
-
-    <div class="result" id="missingResult">
-        Missing cartons will appear here.
-    </div>
-</div>
-<div class="card">
-    <h2>📋 PURCHASE ORDER INFORMATION</h2>
-
-    <div class="inputs">
-
-        <div>
-            <label>PO No</label>
-            <input type="text" id="poNo" placeholder="Example: PO-1001">
-        </div>
-
-        <div>
-            <label>Buyer</label>
-            <input type="text" id="buyer" placeholder="Example: H&M">
-        </div>
-
-        <div>
-            <label>Style No</label>
-            <input type="text" id="style" placeholder="Example: ST-2501">
-        </div>
-
-        <div>
-            <label>Color</label>
-            <input type="text" id="color" placeholder="Example: Black">
-        </div>
-
-        <div>
-            <label>Order Qty (PCS)</label>
-            <input type="number" id="orderQty" placeholder="Example: 200">
-        </div>
-
-        <div>
-            <label>Shipment Date</label>
-            <input type="date" id="shipmentDate">
-        </div>
-
-    </div>
-<div class="card">
-    <h2>📋 PO SHEET GENERATOR</h2>
-
+<h2>📦 Carton Calculator</h2>
 <div class="inputs">
-
-```
-<div>
-    <label>PO No</label>
-    <input type="text" id="poGenNo" placeholder="Example: PO-1001">
+<div><label>Number of Cartons</label><input type="number" id="cartons" placeholder="Example: 25"></div>
+<div><label>Pieces per Carton</label><input type="number" id="pieces" placeholder="Example: 20"></div>
+</div>
+<button type="button" onclick="calculateQty()">Calculate Total Qty</button>
+<div class="result" id="qtyResult">Total Qty: 0 pcs</div>
 </div>
 
-<div>
-    <label>Buyer</label>
-    <input type="text" id="poGenBuyer" placeholder="Example: H&M">
-</div>
-
-<div>
-    <label>Style</label>
-    <input type="text" id="poGenStyle" placeholder="Example: ST-2501">
-</div>
-
-<div>
-    <label>Color</label>
-    <input type="text" id="poGenColor" placeholder="Example: Black">
-</div>
-```
-
-</div>
-
-<div style="margin-top: 15px;">
-
-```
+<div class="card">
+<h2>⚖️ Weight Calculator</h2>
 <div class="inputs">
-
-    <div>
-        <label>Starting Carton</label>
-        <input type="number" id="poStartCarton" placeholder="Example: 1">
-    </div>
-
-    <div>
-        <label>Ending Carton</label>
-        <input type="number" id="poEndCarton" placeholder="Example: 10">
-    </div>
-
-    <div>
-        <label>Qty per Carton</label>
-        <input type="number" id="poQtyPerCarton" placeholder="Example: 20">
-    </div>
-
-    <div>
-        <label>Net WT per Carton (KG)</label>
-        <input type="number" id="poNetWT" step="0.01" placeholder="Example: 10.50">
-    </div>
-
-    <div>
-        <label>Gross WT per Carton (KG)</label>
-        <input type="number" id="poGrossWT" step="0.01" placeholder="Example: 12.00">
-    </div>
-
+<div><label>Number of Cartons</label><input type="number" id="weightCartons" placeholder="Example: 25"></div>
+<div><label>Gross Weight per Carton (KG)</label><input type="number" id="grossPerCarton" step="0.01" placeholder="Example: 12.5"></div>
 </div>
-```
-
+<button type="button" onclick="calculateWeight()">Calculate Gross Weight</button>
+<div class="result" id="weightResult">Total Gross Weight: 0 KG</div>
 </div>
 
-<button onclick="generatePO()">
-    Generate PO
-</button>
-
-<div class="result" id="poResult">
-    PO result will appear here.
-</div>
-
-<div class="result" id="poResult">
-    PO result will appear here.
-</div>
-   <div class="card">
-    <h2>📋 PURCHASE ORDER INFORMATION</h2>
 <div class="card">
-    <h2>📦 PACKING LIST</h2>
-
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; min-width:900px;">
-            <thead>
-                <tr style="background:#1f2937; color:white;">
-                    <th style="padding:10px; border:1px solid #ccc;">Carton No</th>
-                    <th style="padding:10px; border:1px solid #ccc;">Size</th>
-                    <th style="padding:10px; border:1px solid #ccc;">Qty / Carton</th>
-                    <th style="padding:10px; border:1px solid #ccc;">Total Qty</th>
-                    <th style="padding:10px; border:1px solid #ccc;">Net WT (KG)</th>
-                    <th style="padding:10px; border:1px solid #ccc;">Gross WT (KG)</th>
-                </tr>
-            </thead>
-
-            <tbody id="packingBody">
-                <tr>
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="number" class="cartonNo" value="1">
-                    </td>
-
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="text" class="size" placeholder="M">
-                    </td>
-
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="number" class="qtyCarton" oninput="calculatePacking()">
-                    </td>
-
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="number" class="totalQty" readonly>
-                    </td>
-
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="number" class="netWT" step="0.01" oninput="calculatePacking()">
-                    </td>
-
-                    <td style="padding:8px; border:1px solid #ccc;">
-                        <input type="number" class="grossWT" step="0.01" oninput="calculatePacking()">
-                    </td>
-                </tr>
-            </tbody>
-
-            <tfoot>
-                <tr style="font-weight:bold; background:#eef2ff;">
-                    <td colspan="3" style="padding:10px; border:1px solid #ccc; text-align:right;">
-                        GRAND TOTAL
-                    </td>
-
-                    <td style="padding:10px; border:1px solid #ccc;">
-                        <span id="grandQty">0</span>
-                    </td>
-
-                    <td style="padding:10px; border:1px solid #ccc;">
-                        <span id="grandNet">0.00</span> KG
-                    </td>
-
-                    <td style="padding:10px; border:1px solid #ccc;">
-                        <span id="grandGross">0.00</span> KG
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <button onclick="addPackingRow()">➕ Add Carton</button>
+<h2>🔢 Carton Range Generator</h2>
+<div class="inputs">
+<div><label>Starting Carton</label><input type="number" id="startCarton" placeholder="Example: 1"></div>
+<div><label>Ending Carton</label><input type="number" id="endCarton" placeholder="Example: 25"></div>
 </div>
-    <div class="inputs">
-
-        <div>
-            <label>PO No</label>
-            <input type="text" id="poNo" placeholder="Example: PO-1001">
-        </div>
-
-        <div>
-            <label>Buyer</label>
-            <input type="text" id="buyer" placeholder="Example: H&M">
-        </div>
-
-        <div>
-            <label>Style No</label>
-            <input type="text" id="style" placeholder="Example: ST-2501">
-        </div>
-
-        <div>
-            <label>Color</label>
-            <input type="text" id="color" placeholder="Example: Black">
-        </div>
-
-        <div>
-            <label>Order Qty (PCS)</label>
-            <input type="number" id="orderQty" placeholder="Example: 200">
-        </div>
-
-        <div>
-            <label>Shipment Date</label>
-            <input type="date" id="shipmentDate">
-        </div>
-
-    </div>
-</div><h2>🧹 Clear All</h2>
-    <button class="danger" onclick="clearAll()">Clear Everything</button>
+<button type="button" onclick="generateCartons()">Generate</button>
+<div class="result" id="cartonResult">Carton numbers will appear here.</div>
 </div>
+
 <div class="card">
-    <h2>📄 PROFESSIONAL PACKING LIST GENERATOR</h2>
-
-    <div class="inputs">
-
-        <div>
-            <label>Company / Exporter Name</label>
-            <input type="text" id="companyName" placeholder="Example: ABC Garments Ltd.">
-        </div>
-
-        <div>
-            <label>Buyer</label>
-            <input type="text" id="plBuyer" placeholder="Example: H&M">
-        </div>
-
-        <div>
-            <label>PO No</label>
-            <input type="text" id="plPO" placeholder="Example: PO-1001">
-        </div>
-
-        <div>
-            <label>Style No</label>
-            <input type="text" id="plStyle" placeholder="Example: ST-2501">
-        </div>
-
-        <div>
-            <label>Color</label>
-            <input type="text" id="plColor" placeholder="Example: Black">
-        </div>
-
-        <div>
-            <label>Shipment Date</label>
-            <input type="date" id="plShipmentDate">
-        </div>
-
-        <div>
-            <label>Destination</label>
-            <input type="text" id="plDestination" placeholder="Example: New York, USA">
-        </div>
-
-        <div>
-            <label>Country of Origin</label>
-            <input type="text" id="plOrigin" placeholder="Example: Bangladesh">
-        </div>
-
-    </div>
-
-    <div style="margin-top:20px; overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; min-width:1000px;">
-        <thead>
-            <tr style="background:#1f2937; color:white;">
-                <th style="padding:10px; border:1px solid #ccc;">Carton No</th>
-                <th style="padding:10px; border:1px solid #ccc;">Size</th>
-                <th style="padding:10px; border:1px solid #ccc;">Qty / Carton</th>
-                <th style="padding:10px; border:1px solid #ccc;">Total Qty</th>
-                <th style="padding:10px; border:1px solid #ccc;">Net WT (KG)</th>
-                <th style="padding:10px; border:1px solid #ccc;">Gross WT (KG)</th>
-                <th style="padding:10px; border:1px solid #ccc;">Action</th>
-            </tr>
-        </thead>
-
-        <tbody id="professionalPackingBody">
-            <tr>
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="number" class="plCarton" value="1">
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="text" class="plSize" placeholder="M">
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="number" class="plQty" oninput="calculateProfessionalPL()">
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="number" class="plTotalQty" readonly>
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()">
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()">
-                </td>
-
-                <td style="padding:8px; border:1px solid #ccc;">
-                    <button type="button" onclick="this.closest('tr').remove(); calculateProfessionalPL();">
-                        🗑️
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-
-        <tfoot>
-            <tr style="font-weight:bold; background:#eef2ff;">
-                <td colspan="3" style="padding:10px; border:1px solid #ccc; text-align:right;">
-                    GRAND TOTAL
-                </td>
-
-                <td style="padding:10px; border:1px solid #ccc;">
-                    <span id="plGrandQty">0</span> PCS
-                </td>
-
-                <td style="padding:10px; border:1px solid #ccc;">
-                    <span id="plGrandNet">0.00</span> KG
-                </td>
-
-                <td style="padding:10px; border:1px solid #ccc;">
-                    <span id="plGrandGross">0.00</span> KG
-                </td>
-
-                <td style="padding:10px; border:1px solid #ccc;"></td>
-            </tr>
-        </tfoot>
-    </table>
+<h2>❌ Missing Carton Checker</h2>
+<div class="inputs">
+<div><label>Starting Carton</label><input type="number" id="missingStart" placeholder="Example: 1"></div>
+<div><label>Ending Carton</label><input type="number" id="missingEnd" placeholder="Example: 25"></div>
+</div>
+<div style="margin-top:15px"><label>Existing Cartons</label><input type="text" id="cartonList" placeholder="Example: 1,2,3,5,6,8,9,10"></div>
+<button type="button" onclick="checkMissingCartons()">Check Missing Cartons</button>
+<div class="result" id="missingResult">Missing cartons will appear here.</div>
 </div>
 
-<button type="button" onclick="addProfessionalPackingRow()">
-    ➕ Add Carton
-</button><button onclick="generateProfessionalPL()">
-        📄 Generate Packing List
-    </button>
-
-    <div id="professionalPLResult" style="margin-top:20px;"></div>
+<div class="card">
+<h2>📋 PO SHEET GENERATOR</h2>
+<div class="inputs">
+<div><label>PO No</label><input type="text" id="poNo" placeholder="Example: PO-1001"></div>
+<div><label>Buyer</label><input type="text" id="buyer" placeholder="Example: H&M"></div>
+<div><label>Style</label><input type="text" id="style" placeholder="Example: ST-2501"></div>
+<div><label>Color</label><input type="text" id="color" placeholder="Example: Black"></div>
+<div><label>Starting Carton</label><input type="number" id="poStartCarton" placeholder="Example: 1"></div>
+<div><label>Ending Carton</label><input type="number" id="poEndCarton" placeholder="Example: 10"></div>
+<div><label>Qty per Carton</label><input type="number" id="poQtyPerCarton" placeholder="Example: 20"></div>
+<div><label>Net WT per Carton (KG)</label><input type="number" id="poNetWT" step="0.01" placeholder="Example: 10.50"></div>
+<div><label>Gross WT per Carton (KG)</label><input type="number" id="poGrossWT" step="0.01" placeholder="Example: 12.00"></div>
 </div>
-<footer>
-    <p>Garments Data Entry Helper • Version 1</p>
-</footer>
-```
-
+<button type="button" onclick="generatePO()">Generate PO</button>
+<div class="result" id="poResult">PO result will appear here.</div>
 </div>
 
+<div class="card">
+<h2>📦 PACKING LIST</h2>
+<div class="table-wrap">
+<table class="data-table"><thead><tr>
+<th>Carton No</th><th>Size</th><th>Qty / Carton</th><th>Total Qty</th><th>Net WT (KG)</th><th>Gross WT (KG)</th><th>Action</th>
+</tr></thead>
+<tbody id="packingBody"><tr>
+<td><input type="number" class="cartonNo" value="1"></td>
+<td><input type="text" class="size" placeholder="M"></td>
+<td><input type="number" class="qtyCarton" oninput="calculatePacking()"></td>
+<td><input type="number" class="totalQty" readonly placeholder="Auto"></td>
+<td><input type="number" class="netWT" step="0.01" oninput="calculatePacking()"></td>
+<td><input type="number" class="grossWT" step="0.01" oninput="calculatePacking()"></td>
+<td><button type="button" class="danger small" onclick="this.closest('tr').remove();calculatePacking()">🗑️</button></td>
+</tr></tbody>
+<tfoot><tr><td colspan="3" style="text-align:right"><b>GRAND TOTAL</b></td>
+<td><b id="grandQty">0</b></td><td><b id="grandNet">0.00</b> KG</td><td><b id="grandGross">0.00</b> KG</td><td></td></tr></tfoot>
+</table>
+</div>
+<button type="button" onclick="addPackingRow()">➕ Add Carton</button>
+</div>
+
+<div class="card">
+<h2>📄 PROFESSIONAL PACKING LIST GENERATOR</h2>
+<div class="inputs">
+<div><label>Company / Exporter Name</label><input type="text" id="companyName" placeholder="Example: ABC Garments Ltd."></div>
+<div><label>Buyer</label><input type="text" id="plBuyer" placeholder="Example: H&M"></div>
+<div><label>PO No</label><input type="text" id="plPO" placeholder="Example: PO-1001"></div>
+<div><label>Style No</label><input type="text" id="plStyle" placeholder="Example: ST-2501"></div>
+<div><label>Color</label><input type="text" id="plColor" placeholder="Example: Black"></div>
+<div><label>Shipment Date</label><input type="date" id="plShipmentDate"></div>
+<div><label>Destination</label><input type="text" id="plDestination" placeholder="Example: New York, USA"></div>
+<div><label>Country of Origin</label><input type="text" id="plOrigin" placeholder="Example: Bangladesh"></div>
+</div>
+<div class="table-wrap" style="margin-top:20px">
+<table class="data-table"><thead><tr>
+<th>Carton No</th><th>Size</th><th>Qty / Carton</th><th>Total Qty</th><th>Net WT (KG)</th><th>Gross WT (KG)</th><th>Action</th>
+</tr></thead>
+<tbody id="professionalPackingBody"><tr>
+<td><input type="number" class="plCarton" value="1"></td>
+<td><input type="text" class="plSize" placeholder="M"></td>
+<td><input type="number" class="plQty" oninput="calculateProfessionalPL()"></td>
+<td><input type="number" class="plTotalQty" readonly placeholder="Auto"></td>
+<td><input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()"></td>
+<td><input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()"></td>
+<td><button type="button" class="danger small" onclick="this.closest('tr').remove();calculateProfessionalPL()">🗑️</button></td>
+</tr></tbody>
+<tfoot><tr><td colspan="3" style="text-align:right"><b>GRAND TOTAL</b></td>
+<td><b id="plGrandQty">0</b> PCS</td><td><b id="plGrandNet">0.00</b> KG</td><td><b id="plGrandGross">0.00</b> KG</td><td></td></tr></tfoot>
+</table></div>
+<button type="button" onclick="addProfessionalPackingRow()">➕ Add Carton</button>
+<button type="button" onclick="generateProfessionalPL()">📄 Generate Packing List</button>
+<div id="professionalPLResult"></div>
+</div>
+
+<div class="card"><h2>🧹 Clear All</h2><button type="button" class="danger" onclick="clearAll()">Clear Everything</button></div>
+<footer><p>Garments Data Entry Helper • Fixed Version</p></footer>
+</div>
+</body>
 <script>
+function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : "";
+}
 
 function calculateQty() {
-    let cartons = Number(document.getElementById("cartons").value) || 0;
-    let pieces = Number(document.getElementById("pieces").value) || 0;
-
-    let total = cartons * pieces;
-
+    const cartons = Number(val("cartons")) || 0;
+    const pieces = Number(val("pieces")) || 0;
     document.getElementById("qtyResult").innerText =
-        "Total Qty: " + total + " pcs";
+        "Total Qty: " + (cartons * pieces) + " pcs";
 }
-
 
 function calculateWeight() {
-    let cartons = Number(document.getElementById("weightCartons").value) || 0;
-    let gross = Number(document.getElementById("grossPerCarton").value) || 0;
-
-    let total = cartons * gross;
-
+    const cartons = Number(val("weightCartons")) || 0;
+    const gross = Number(val("grossPerCarton")) || 0;
     document.getElementById("weightResult").innerText =
-        "Total Gross Weight: " + total.toFixed(2) + " KG";
+        "Total Gross Weight: " + (cartons * gross).toFixed(2) + " KG";
 }
 
-
 function generateCartons() {
-    let start = Number(document.getElementById("startCarton").value);
-    let end = Number(document.getElementById("endCarton").value);
-
-    if (!start || !end || end < start) {
+    const start = Number(val("startCarton"));
+    const end = Number(val("endCarton"));
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
         document.getElementById("cartonResult").innerText =
-            "Please enter a valid carton range.";
+            "⚠️ Enter a valid starting and ending carton.";
         return;
     }
-
     let result = [];
-
-    for (let i = start; i <= end; i++) {
-        result.push(i);
-    }
-
+    for (let i = start; i <= end; i++) result.push(i);
     document.getElementById("cartonResult").innerText =
         "Cartons: " + result.join(", ");
 }
 
-
 function checkMissingCartons() {
-    let start = Number(document.getElementById("missingStart").value);
-    let end = Number(document.getElementById("missingEnd").value);
-    let cartonText = document.getElementById("cartonList").value;
-
-    if (!start || !end || end < start) {
+    const start = Number(val("missingStart"));
+    const end = Number(val("missingEnd"));
+    const text = val("cartonList");
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
         document.getElementById("missingResult").innerText =
-            "Please enter a valid carton range.";
+            "⚠️ Enter a valid carton range.";
+        return;
+    }
+    const existing = text.split(",")
+        .map(x => Number(x.trim()))
+        .filter(x => Number.isFinite(x));
+    const missing = [];
+    for (let i = start; i <= end; i++) {
+        if (!existing.includes(i)) missing.push(i);
+    }
+    document.getElementById("missingResult").innerText =
+        missing.length ? "❌ Missing Carton: " + missing.join(", ")
+                       : "✅ No Missing Carton";
+}
+
+function generatePO() {
+    const start = Number(val("poStartCarton"));
+    const end = Number(val("poEndCarton"));
+    const qtyPerCarton = Number(val("poQtyPerCarton")) || 0;
+    const netWT = Number(val("poNetWT")) || 0;
+    const grossWT = Number(val("poGrossWT")) || 0;
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
+        document.getElementById("poResult").innerHTML =
+            "⚠️ Please enter a valid carton range.";
         return;
     }
 
-    let existing = cartonText
-        .split(",")
-        .map(item => Number(item.trim()))
-        .filter(item => !isNaN(item));
+    const totalCartons = end - start + 1;
+    const totalQty = totalCartons * qtyPerCarton;
+    const totalNetWT = totalCartons * netWT;
+    const totalGrossWT = totalCartons * grossWT;
 
-    let missing = [];
-
-    for (let i = start; i <= end; i++) {
-        if (!existing.includes(i)) {
-            missing.push(i);
-        }
-    }
-
-    if (missing.length === 0) {
-        document.getElementById("missingResult").innerText =
-            "✅ No Missing Carton";
-    } else {
-        document.getElementById("missingResult").innerText =
-            "❌ Missing Carton: " + missing.join(", ");
-    }
-}
-
-
-/* =========================
-   PO GENERATOR
-========================= */
-
-function generatePO() {
-
-const poNo = document.getElementById("poGenNo").value.trim();
-const buyer = document.getElementById("poGenBuyer").value.trim();
-const style = document.getElementById("poGenStyle").value.trim();
-const color = document.getElementById("poGenColor").value.trim();
-
-const startCarton = parseInt(document.getElementById("poStartCarton").value);
-const endCarton = parseInt(document.getElementById("poEndCarton").value);
-const qtyPerCarton = parseInt(document.getElementById("poQtyPerCarton").value);
-const netWT = parseFloat(document.getElementById("poNetWT").value);
-const grossWT = parseFloat(document.getElementById("poGrossWT").value);
-
-if (
-    !poNo ||
-    !buyer ||
-    !style ||
-    !color ||
-    isNaN(startCarton) ||
-    isNaN(endCarton) ||
-    isNaN(qtyPerCarton) ||
-    isNaN(netWT) ||
-    isNaN(grossWT)
-) {
-    document.getElementById("poResult").innerHTML =
-        "⚠️ Please fill in all PO information.";
-    return;
-}
-
-if (endCarton < startCarton) {
-    document.getElementById("poResult").innerHTML =
-        "⚠️ Ending carton must be greater than or equal to starting carton.";
-    return;
-}
-
-const cartonCount = endCarton - startCarton + 1;
-const totalQty = cartonCount * qtyPerCarton;
-const totalNetWT = cartonCount * netWT;
-const totalGrossWT = cartonCount * grossWT;
-
-let html = `
-    <h3>📋 PURCHASE ORDER</h3>
-
-    <p><strong>PO No:</strong> ${poNo}</p>
-    <p><strong>Buyer:</strong> ${buyer}</p>
-    <p><strong>Style:</strong> ${style}</p>
-    <p><strong>Color:</strong> ${color}</p>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Carton No</th>
-                <th>Qty / Carton</th>
-                <th>Total Qty</th>
-                <th>Net WT (KG)</th>
-                <th>Gross WT (KG)</th>
-            </tr>
-        </thead>
-        <tbody>
-`;
-
-for (let i = startCarton; i <= endCarton; i++) {
-
-    html += `
-        <tr>
-            <td>${i}</td>
-            <td>${qtyPerCarton}</td>
-            <td>${qtyPerCarton}</td>
-            <td>${netWT.toFixed(2)}</td>
-            <td>${grossWT.toFixed(2)}</td>
-        </tr>
+    document.getElementById("poResult").innerHTML = `
+        <b>PO No:</b> ${val("poNo") || "—"}<br>
+        <b>Buyer:</b> ${val("buyer") || "—"}<br>
+        <b>Style:</b> ${val("style") || "—"}<br>
+        <b>Color:</b> ${val("color") || "—"}<br><br>
+        <b>Total Cartons:</b> ${totalCartons}<br>
+        <b>Total Qty:</b> ${totalQty} pcs<br>
+        <b>Total Net WT:</b> ${totalNetWT.toFixed(2)} KG<br>
+        <b>Total Gross WT:</b> ${totalGrossWT.toFixed(2)} KG
     `;
 }
 
-html += `
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th colspan="2">GRAND TOTAL</th>
-                <th>${totalQty}</th>
-                <th>${totalNetWT.toFixed(2)}</th>
-                <th>${totalGrossWT.toFixed(2)}</th>
-            </tr>
-        </tfoot>
-    </table>
-`;
-
-document.getElementById("poResult").innerHTML = html;
-
-}
-
-
-/* =========================
-   BASIC PACKING LIST
-========================= */
-
 function calculatePacking() {
-
-    let rows = document.querySelectorAll("#packingBody tr");
-
-    let grandQty = 0;
-    let grandNet = 0;
-    let grandGross = 0;
-
-    rows.forEach(function(row) {
-
-        let qtyInput = row.querySelector(".qtyCarton");
-        let totalQtyInput = row.querySelector(".totalQty");
-        let netInput = row.querySelector(".netWT");
-        let grossInput = row.querySelector(".grossWT");
-
-        let qty = Number(qtyInput.value) || 0;
-        let net = Number(netInput.value) || 0;
-        let gross = Number(grossInput.value) || 0;
-
-        totalQtyInput.value = qty;
-
+    let grandQty = 0, grandNet = 0, grandGross = 0;
+    document.querySelectorAll("#packingBody tr").forEach(row => {
+        const qty = Number(row.querySelector(".qtyCarton").value) || 0;
+        const total = row.querySelector(".totalQty");
+        total.value = qty;
         grandQty += qty;
-        grandNet += net;
-        grandGross += gross;
+        grandNet += Number(row.querySelector(".netWT").value) || 0;
+        grandGross += Number(row.querySelector(".grossWT").value) || 0;
     });
-
     document.getElementById("grandQty").innerText = grandQty;
     document.getElementById("grandNet").innerText = grandNet.toFixed(2);
     document.getElementById("grandGross").innerText = grandGross.toFixed(2);
 }
 
-
 function addPackingRow() {
-
-    let tableBody = document.getElementById("packingBody");
-    let rowCount = tableBody.rows.length + 1;
-
-    let row = document.createElement("tr");
-
+    const body = document.getElementById("packingBody");
+    const n = body.rows.length + 1;
+    const row = document.createElement("tr");
     row.innerHTML = `
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="cartonNo" value="${rowCount}">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="text" class="size" placeholder="M">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="qtyCarton" oninput="calculatePacking()">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="totalQty" readonly>
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="netWT" step="0.01" oninput="calculatePacking()">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="grossWT" step="0.01" oninput="calculatePacking()">
-        </td>
+        <td><input type="number" class="cartonNo" value="${n}"></td>
+        <td><input type="text" class="size" placeholder="M"></td>
+        <td><input type="number" class="qtyCarton" oninput="calculatePacking()"></td>
+        <td><input type="number" class="totalQty" readonly placeholder="Auto"></td>
+        <td><input type="number" class="netWT" step="0.01" oninput="calculatePacking()"></td>
+        <td><input type="number" class="grossWT" step="0.01" oninput="calculatePacking()"></td>
+        <td><button type="button" class="danger small" onclick="this.closest('tr').remove(); calculatePacking();">🗑️</button></td>
     `;
-
-    tableBody.appendChild(row);
+    body.appendChild(row);
 }
 
-
-/* =========================
-   PROFESSIONAL PACKING LIST
-========================= */
-
 function calculateProfessionalPL() {
-
-    let rows = document.querySelectorAll("#professionalPackingBody tr");
-
-    let grandQty = 0;
-    let grandNet = 0;
-    let grandGross = 0;
-
-    rows.forEach(function(row) {
-
-        let qty = Number(row.querySelector(".plQty").value) || 0;
-        let net = Number(row.querySelector(".plNet").value) || 0;
-        let gross = Number(row.querySelector(".plGross").value) || 0;
-
+    let grandQty = 0, grandNet = 0, grandGross = 0;
+    document.querySelectorAll("#professionalPackingBody tr").forEach(row => {
+        const qty = Number(row.querySelector(".plQty").value) || 0;
         row.querySelector(".plTotalQty").value = qty;
-
         grandQty += qty;
-        grandNet += net;
-        grandGross += gross;
+        grandNet += Number(row.querySelector(".plNet").value) || 0;
+        grandGross += Number(row.querySelector(".plGross").value) || 0;
     });
-
     document.getElementById("plGrandQty").innerText = grandQty;
     document.getElementById("plGrandNet").innerText = grandNet.toFixed(2);
     document.getElementById("plGrandGross").innerText = grandGross.toFixed(2);
 }
 
-
 function addProfessionalPackingRow() {
-
-    let tableBody = document.getElementById("professionalPackingBody");
-
-    let rowCount = tableBody.rows.length + 1;
-
-    let row = document.createElement("tr");
-
+    const body = document.getElementById("professionalPackingBody");
+    const n = body.rows.length + 1;
+    const row = document.createElement("tr");
     row.innerHTML = `
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="plCarton" value="${rowCount}">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="text" class="plSize" placeholder="M">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="plQty" oninput="calculateProfessionalPL()">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="plTotalQty" readonly>
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()">
-        </td>
-
-        <td style="padding:8px; border:1px solid #ccc;">
-            <button type="button"
-                onclick="this.closest('tr').remove(); calculateProfessionalPL();">
-                🗑️
-            </button>
-        </td>
+        <td><input type="number" class="plCarton" value="${n}"></td>
+        <td><input type="text" class="plSize" placeholder="M"></td>
+        <td><input type="number" class="plQty" oninput="calculateProfessionalPL()"></td>
+        <td><input type="number" class="plTotalQty" readonly placeholder="Auto"></td>
+        <td><input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()"></td>
+        <td><input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()"></td>
+        <td><button type="button" class="danger small" onclick="this.closest('tr').remove(); calculateProfessionalPL();">🗑️</button></td>
     `;
-
-    tableBody.appendChild(row);
-
-    calculateProfessionalPL();
+    body.appendChild(row);
 }
-
-
-/* =========================
-   GENERATE PROFESSIONAL PL
-========================= */
 
 function generateProfessionalPL() {
-
     calculateProfessionalPL();
 
-    let company = document.getElementById("companyName").value || "—";
-    let buyer = document.getElementById("plBuyer").value || "—";
-    let po = document.getElementById("plPO").value || "—";
-    let style = document.getElementById("plStyle").value || "—";
-    let color = document.getElementById("plColor").value || "—";
-    let shipmentDate = document.getElementById("plShipmentDate").value || "—";
-    let destination = document.getElementById("plDestination").value || "—";
-    let origin = document.getElementById("plOrigin").value || "—";
-
-    let rows = document.querySelectorAll(
-        "#professionalPackingBody tr"
-    );
-
+    const rows = document.querySelectorAll("#professionalPackingBody tr");
     let tableRows = "";
-
-    rows.forEach(function(row) {
-
-        let carton = row.querySelector(".plCarton").value || "";
-        let size = row.querySelector(".plSize").value || "";
-        let qty = Number(row.querySelector(".plQty").value) || 0;
-        let net = Number(row.querySelector(".plNet").value) || 0;
-        let gross = Number(row.querySelector(".plGross").value) || 0;
-
+    rows.forEach(row => {
+        const carton = row.querySelector(".plCarton").value || "";
+        const size = row.querySelector(".plSize").value || "";
+        const qty = Number(row.querySelector(".plQty").value) || 0;
+        const net = Number(row.querySelector(".plNet").value) || 0;
+        const gross = Number(row.querySelector(".plGross").value) || 0;
         tableRows += `
             <tr>
-                <td>${carton}</td>
-                <td>${size}</td>
-                <td>${qty}</td>
-                <td>${qty}</td>
-                <td>${net.toFixed(2)}</td>
-                <td>${gross.toFixed(2)}</td>
-            </tr>
-        `;
+                <td>${carton}</td><td>${size}</td><td>${qty}</td>
+                <td>${qty}</td><td>${net.toFixed(2)}</td><td>${gross.toFixed(2)}</td>
+            </tr>`;
     });
 
-    let grandQty =
-        document.getElementById("plGrandQty").innerText;
-
-    let grandNet =
-        document.getElementById("plGrandNet").innerText;
-
-    let grandGross =
-        document.getElementById("plGrandGross").innerText;
-
     document.getElementById("professionalPLResult").innerHTML = `
-
-        <div id="printPackingList"
-            style="
-                background:white;
-                padding:35px;
-                border:1px solid #ccc;
-                font-family:Arial,sans-serif;
-                color:#111;
-            ">
-
-            <div style="text-align:center;margin-bottom:25px;">
-                <h1 style="margin-bottom:5px;">
-                    ${company}
-                </h1>
-
-                <h2 style="margin:0;">
-                    PACKING LIST
-                </h2>
+        <div id="printPackingList" class="print-area">
+            <div class="print-title">
+                <h1>${val("companyName") || "—"}</h1>
+                <h2>PACKING LIST</h2>
             </div>
-
-            <table style="
-                width:100%;
-                margin-bottom:20px;
-                border-collapse:collapse;
-            ">
-
-                <tr>
-                    <td style="padding:8px;">
-                        <b>BUYER:</b> ${buyer}
-                    </td>
-
-                    <td style="padding:8px;">
-                        <b>PO NO:</b> ${po}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding:8px;">
-                        <b>STYLE NO:</b> ${style}
-                    </td>
-
-                    <td style="padding:8px;">
-                        <b>COLOR:</b> ${color}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding:8px;">
-                        <b>SHIPMENT DATE:</b> ${shipmentDate}
-                    </td>
-
-                    <td style="padding:8px;">
-                        <b>DESTINATION:</b> ${destination}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding:8px;">
-                        <b>COUNTRY OF ORIGIN:</b> ${origin}
-                    </td>
-
-                    <td style="padding:8px;"></td>
-                </tr>
-
-            </table>
-
-            <table style="
-                width:100%;
-                border-collapse:collapse;
-                text-align:center;
-            ">
-
-                <thead>
-                    <tr style="
-                        background:#1f2937;
-                        color:white;
-                    ">
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            CARTON NO
-                        </th>
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            SIZE
-                        </th>
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            QTY / CARTON
-                        </th>
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            TOTAL QTY
-                        </th>
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            NET WT (KG)
-                        </th>
-
-                        <th style="padding:10px;border:1px solid #333;">
-                            GROSS WT (KG)
-                        </th>
-
-                    </tr>
-                </thead>
-
-                <tbody>
-                    ${tableRows}
-                </tbody>
-
-                <tfoot>
-
-                    <tr style="
-                        font-weight:bold;
-                        background:#eef2ff;
-                    ">
-
-                        <td colspan="3"
-                            style="
-                                padding:10px;
-                                border:1px solid #333;
-                                text-align:right;
-                            ">
-                            GRAND TOTAL
-                        </td>
-
-                        <td style="padding:10px;border:1px solid #333;">
-                            ${grandQty}
-                        </td>
-
-                        <td style="padding:10px;border:1px solid #333;">
-                            ${grandNet}
-                        </td>
-
-                        <td style="padding:10px;border:1px solid #333;">
-                            ${grandGross}
-                        </td>
-
-                    </tr>
-
-                </tfoot>
-
-            </table>
-
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                margin-top:70px;
-                text-align:center;
-            ">
-
-                <div>
-                    ____________________<br>
-                    Prepared By
-                </div>
-
-                <div>
-                    ____________________<br>
-                    Checked By
-                </div>
-
-                <div>
-                    ____________________<br>
-                    Authorized Signature
-                </div>
-
+            <div class="info-grid">
+                <div><b>BUYER:</b> ${val("plBuyer") || "—"}</div>
+                <div><b>PO NO:</b> ${val("plPO") || "—"}</div>
+                <div><b>STYLE NO:</b> ${val("plStyle") || "—"}</div>
+                <div><b>COLOR:</b> ${val("plColor") || "—"}</div>
+                <div><b>SHIPMENT DATE:</b> ${val("plShipmentDate") || "—"}</div>
+                <div><b>DESTINATION:</b> ${val("plDestination") || "—"}</div>
+                <div><b>COUNTRY OF ORIGIN:</b> ${val("plOrigin") || "—"}</div>
             </div>
-
+            <table class="output-table">
+                <thead><tr>
+                    <th>CARTON NO</th><th>SIZE</th><th>QTY / CARTON</th>
+                    <th>TOTAL QTY</th><th>NET WT (KG)</th><th>GROSS WT (KG)</th>
+                </tr></thead>
+                <tbody>${tableRows}</tbody>
+                <tfoot><tr>
+                    <td colspan="3">GRAND TOTAL</td>
+                    <td>${document.getElementById("plGrandQty").innerText}</td>
+                    <td>${document.getElementById("plGrandNet").innerText}</td>
+                    <td>${document.getElementById("plGrandGross").innerText}</td>
+                </tr></tfoot>
+            </table>
+            <div class="signatures">
+                <div>____________________<br>Prepared By</div>
+                <div>____________________<br>Checked By</div>
+                <div>____________________<br>Authorized Signature</div>
+            </div>
         </div>
-
-        <div style="
-            text-align:center;
-            margin-top:20px;
-            display:flex;
-            justify-content:center;
-            gap:10px;
-        ">
-
-            <button type="button"
-                onclick="printPackingList()">
-                🖨️ Print / Save PDF
-            </button>
-
-            <button type="button"
-                onclick="downloadPackingListExcel()">
-                📊 Download Excel
-            </button>
-
+        <div class="action-row">
+            <button type="button" onclick="printPackingList()">🖨️ Print / Save PDF</button>
+            <button type="button" onclick="downloadPackingListExcel()">📊 Download Excel</button>
         </div>
     `;
 }
 
-
-/* =========================
-   PRINT / SAVE PDF
-========================= */
-
 function printPackingList() {
-
-    let content =
-        document.getElementById("printPackingList");
-
+    const content = document.getElementById("printPackingList");
     if (!content) {
-        alert("Please generate the Packing List first.");
+        alert("Please click Generate Packing List first.");
         return;
     }
-
-    let printWindow = window.open("", "_blank");
-
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Packing List</title>
-
-            <style>
-
-                body {
-                    margin:0;
-                    padding:20px;
-                    font-family:Arial,sans-serif;
-                    background:white;
-                }
-
-                table {
-                    border-collapse:collapse;
-                }
-
-                @media print {
-
-                    body {
-                        padding:0;
-                    }
-
-                    @page {
-                        size:A4 landscape;
-                        margin:10mm;
-                    }
-
-                }
-
-            </style>
-
-        </head>
-
-        <body>
-            ${content.outerHTML}
-        </body>
-
-        </html>
+    const win = window.open("", "_blank");
+    win.document.write(`
+        <!doctype html><html><head><title>Packing List</title>
+        <style>
+        body{font-family:Arial,sans-serif;padding:30px;color:#111}
+        table{width:100%;border-collapse:collapse;margin-top:20px}
+        th,td{border:1px solid #333;padding:8px;text-align:center}
+        th{background:#eee}.print-title{text-align:center}
+        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+        .signatures{display:flex;justify-content:space-between;text-align:center;margin-top:70px}
+        @media print{body{padding:10px}}
+        </style></head><body>${content.outerHTML}</body></html>
     `);
-
-    printWindow.document.close();
-
-    printWindow.focus();
-
-    setTimeout(function() {
-        printWindow.print();
-    }, 500);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 300);
 }
-
-
-/* =========================
-   DOWNLOAD EXCEL
-========================= */
 
 function downloadPackingListExcel() {
-
     if (typeof XLSX === "undefined") {
-        alert("Excel library is not loaded. Please refresh the page.");
+        alert("Excel library is still loading. Please try again.");
         return;
     }
-
-    let company =
-        document.getElementById("companyName").value || "";
-
-    let buyer =
-        document.getElementById("plBuyer").value || "";
-
-    let po =
-        document.getElementById("plPO").value || "";
-
-    let style =
-        document.getElementById("plStyle").value || "";
-
-    let color =
-        document.getElementById("plColor").value || "";
-
-    let shipmentDate =
-        document.getElementById("plShipmentDate").value || "";
-
-    let destination =
-        document.getElementById("plDestination").value || "";
-
-    let origin =
-        document.getElementById("plOrigin").value || "";
-
-
-    let rows =
-        document.querySelectorAll(
-            "#professionalPackingBody tr"
-        );
-
-
-    let excelData = [];
-
-
-    /* ROW 1 */
-    excelData.push([company]);
-
-    /* ROW 2 */
-    excelData.push(["PACKING LIST"]);
-
-    /* ROW 3 */
-    excelData.push([]);
-
-
-    /* ROW 4 */
-    excelData.push([
-        "BUYER",
-        buyer,
-        "PO NO",
-        po
-    ]);
-
-    /* ROW 5 */
-    excelData.push([
-        "STYLE NO",
-        style,
-        "COLOR",
-        color
-    ]);
-
-    /* ROW 6 */
-    excelData.push([
-        "SHIPMENT DATE",
-        shipmentDate,
-        "DESTINATION",
-        destination
-    ]);
-
-    /* ROW 7 */
-    excelData.push([
-        "COUNTRY OF ORIGIN",
-        origin
-    ]);
-
-    /* ROW 8 */
-    excelData.push([]);
-
-
-    /* ROW 9 - TABLE HEADER */
-    excelData.push([
-        "CARTON NO",
-        "SIZE",
-        "QTY / CARTON",
-        "TOTAL QTY",
-        "NET WT (KG)",
-        "GROSS WT (KG)"
-    ]);
-
-
-    /*
-       Excel:
-       Row 9 = Header
-       Row 10 = First Data
-    */
-
-    let firstDataRow = 10;
-
-
-    rows.forEach(function(row, index) {
-
-        let carton =
-            row.querySelector(".plCarton").value || "";
-
-        let size =
-            row.querySelector(".plSize").value || "";
-
-        let qty =
-            Number(row.querySelector(".plQty").value) || 0;
-
-        let net =
-            Number(row.querySelector(".plNet").value) || 0;
-
-        let gross =
-            Number(row.querySelector(".plGross").value) || 0;
-
-
-        let excelRow =
-            firstDataRow + index;
-
-
-        excelData.push([
-
-            carton,
-
-            size,
-
-            qty,
-
-            /*
-               TOTAL QTY
-               Formula = Qty / Carton
-            */
-
-            {
-                t: "n",
-                f: `C${excelRow}`
-            },
-
-            net,
-
-            gross
-
+    const rows = document.querySelectorAll("#professionalPackingBody tr");
+    const data = [
+        [val("companyName") || ""], ["PACKING LIST"], [],
+        ["BUYER", val("plBuyer"), "PO NO", val("plPO")],
+        ["STYLE NO", val("plStyle"), "COLOR", val("plColor")],
+        ["SHIPMENT DATE", val("plShipmentDate"), "DESTINATION", val("plDestination")],
+        ["COUNTRY OF ORIGIN", val("plOrigin")], [],
+        ["CARTON NO","SIZE","QTY / CARTON","TOTAL QTY","NET WT (KG)","GROSS WT (KG)"]
+    ];
+    rows.forEach(row => {
+        const qty = Number(row.querySelector(".plQty").value) || 0;
+        data.push([
+            row.querySelector(".plCarton").value || "",
+            row.querySelector(".plSize").value || "",
+            qty, qty,
+            Number(row.querySelector(".plNet").value) || 0,
+            Number(row.querySelector(".plGross").value) || 0
         ]);
-
     });
-
-
-    /*
-       GRAND TOTAL
-    */
-
-    let lastDataRow =
-        firstDataRow + rows.length - 1;
-
-    let grandTotalRow =
-        lastDataRow + 2;
-
-
-    excelData.push([]);
-
-
-    excelData.push([
-
-        "GRAND TOTAL",
-
-        "",
-
-        "",
-
-
-        {
-            t: "n",
-            f:
-                `SUM(D${firstDataRow}:D${lastDataRow})`
-        },
-
-
-        {
-            t: "n",
-            f:
-                `SUM(E${firstDataRow}:E${lastDataRow})`
-        },
-
-
-        {
-            t: "n",
-            f:
-                `SUM(F${firstDataRow}:F${lastDataRow})`
-        }
-
+    data.push([]);
+    data.push([
+        "GRAND TOTAL","","",
+        Number(document.getElementById("plGrandQty").innerText) || 0,
+        Number(document.getElementById("plGrandNet").innerText) || 0,
+        Number(document.getElementById("plGrandGross").innerText) || 0
     ]);
-
-
-    /* CREATE WORKSHEET */
-
-    let worksheet =
-        XLSX.utils.aoa_to_sheet(excelData);
-
-
-    /* MERGE TITLES */
-
-    worksheet["!merges"] = [
-
-        {
-            s: { r:0, c:0 },
-            e: { r:0, c:5 }
-        },
-
-        {
-            s: { r:1, c:0 },
-            e: { r:1, c:5 }
-        }
-
-    ];
-
-
-    /* COLUMN WIDTH */
-
-    worksheet["!cols"] = [
-
-        { wch:18 },
-        { wch:15 },
-        { wch:18 },
-        { wch:18 },
-        { wch:18 },
-        { wch:20 }
-
-    ];
-
-
-    /* ROW HEIGHT */
-
-    worksheet["!rows"] = [
-
-        { hpt:28 },
-        { hpt:32 }
-
-    ];
-
-
-    /* PAGE SETUP */
-
-    worksheet["!pageSetup"] = {
-
-        orientation:"landscape",
-        paperSize:9,
-        fitToWidth:1,
-        fitToHeight:0
-
-    };
-
-
-    /* PRINT AREA */
-
-    worksheet["!printArea"] =
-        "A1:F" + excelData.length;
-
-
-    /* FREEZE */
-
-    worksheet["!freeze"] = {
-
-        xSplit:0,
-        ySplit:8
-
-    };
-
-
-    /* COMPANY TITLE */
-
-    if (worksheet["A1"]) {
-
-        worksheet["A1"].s = {
-
-            font: {
-                bold:true,
-                sz:16
-            },
-
-            alignment: {
-                horizontal:"center",
-                vertical:"center"
-            }
-
-        };
-
-    }
-
-
-    /* PACKING LIST TITLE */
-
-    if (worksheet["A2"]) {
-
-        worksheet["A2"].s = {
-
-            font: {
-                bold:true,
-                sz:18
-            },
-
-            alignment: {
-                horizontal:"center",
-                vertical:"center"
-            }
-
-        };
-
-    }
-
-
-    /* HEADER STYLE */
-
-    for (let col = 0; col < 6; col++) {
-
-        let cell =
-            XLSX.utils.encode_cell({
-                r:8,
-                c:col
-            });
-
-        if (worksheet[cell]) {
-
-            worksheet[cell].s = {
-
-                font: {
-                    bold:true,
-                    sz:11
-                },
-
-                alignment: {
-
-                    horizontal:"center",
-                    vertical:"center",
-                    wrapText:true
-
-                },
-
-                border: {
-
-                    top:{style:"thin"},
-                    bottom:{style:"thin"},
-                    left:{style:"thin"},
-                    right:{style:"thin"}
-
-                }
-
-            };
-
-        }
-
-    }
-
-
-    /* BODY STYLE */
-
-    let tableStartRow = 10;
-
-    let lastRow =
-        tableStartRow + rows.length - 1;
-
-
-    for (
-        let R = tableStartRow;
-        R <= lastRow;
-        R++
-    ) {
-
-        for (
-            let C = 0;
-            C < 6;
-            C++
-        ) {
-
-            let address =
-                XLSX.utils.encode_cell({
-
-                    r:R - 1,
-                    c:C
-
-                });
-
-
-            if (!worksheet[address]) {
-                continue;
-            }
-
-
-            worksheet[address].s = {
-
-                alignment: {
-
-                    horizontal:"center",
-                    vertical:"center"
-
-                },
-
-                border: {
-
-                    top:{style:"thin"},
-                    bottom:{style:"thin"},
-                    left:{style:"thin"},
-                    right:{style:"thin"}
-
-                }
-
-            };
-
-        }
-
-    }
-
-
-    /* GRAND TOTAL STYLE */
-
-    let grandExcelRow =
-        lastRow + 2;
-
-
-    for (
-        let C = 0;
-        C < 6;
-        C++
-    ) {
-
-        let address =
-            XLSX.utils.encode_cell({
-
-                r:grandExcelRow - 1,
-                c:C
-
-            });
-
-
-        if (!worksheet[address]) {
-            continue;
-        }
-
-
-        worksheet[address].s = {
-
-            font: {
-
-                bold:true,
-                sz:11
-
-            },
-
-            alignment: {
-
-                horizontal:"center",
-                vertical:"center"
-
-            },
-
-            border: {
-
-                top:{style:"medium"},
-                bottom:{style:"medium"},
-                left:{style:"thin"},
-                right:{style:"thin"}
-
-            }
-
-        };
-
-    }
-
-
-    /* CREATE WORKBOOK */
-
-    let workbook =
-        XLSX.utils.book_new();
-
-
-    XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "Packing List"
-    );
-
-
-    /* FILE NAME */
-
-    let fileName =
-        po
-        ? po.replace(/[\\/:*?"<>|]/g,"_")
-          + "_Packing_List.xlsx"
-        : "Packing_List.xlsx";
-
-
-    /* DOWNLOAD */
-
-    XLSX.writeFile(
-        workbook,
-        fileName
-    );
-
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws["!cols"] = [{wch:18},{wch:15},{wch:16},{wch:16},{wch:17},{wch:18}];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Packing List");
+    const po = val("plPO").replace(/[\\/:*?"<>|]/g, "_");
+    XLSX.writeFile(wb, (po || "Packing_List") + "_Packing_List.xlsx");
 }
-
-
-/* =========================
-   CLEAR ALL
-========================= */
 
 function clearAll() {
-
-    document.querySelectorAll("input").forEach(function(input) {
-        input.value = "";
-    });
-
-    document.getElementById("qtyResult").innerText =
-        "Total Qty: 0 pcs";
-
-    document.getElementById("weightResult").innerText =
-        "Total Gross Weight: 0 KG";
-
-    document.getElementById("cartonResult").innerText =
-        "Carton numbers will appear here.";
-
-    document.getElementById("missingResult").innerText =
-        "Missing cartons will appear here.";
-
-    let poResult =
-        document.getElementById("poResult");
-
-    if (poResult) {
-        poResult.innerHTML =
-            "PO result will appear here.";
-    }
-
-    document.getElementById("grandQty").innerText = "0";
-    document.getElementById("grandNet").innerText = "0.00";
-    document.getElementById("grandGross").innerText = "0.00";
-
-    document.getElementById("plGrandQty").innerText = "0";
-    document.getElementById("plGrandNet").innerText = "0.00";
-    document.getElementById("plGrandGross").innerText = "0.00";
-
+    document.querySelectorAll("input").forEach(input => input.value = "");
+    document.getElementById("qtyResult").innerText = "Total Qty: 0 pcs";
+    document.getElementById("weightResult").innerText = "Total Gross Weight: 0 KG";
+    document.getElementById("cartonResult").innerText = "Carton numbers will appear here.";
+    document.getElementById("missingResult").innerText = "Missing cartons will appear here.";
+    document.getElementById("poResult").innerText = "PO result will appear here.";
     document.getElementById("professionalPLResult").innerHTML = "";
-
+    calculatePacking();
+    calculateProfessionalPL();
 }
-
 </script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-</body>
 </html>
