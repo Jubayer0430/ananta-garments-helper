@@ -1046,32 +1046,161 @@ function addPackingRow() {
 
     // CREATE WORKSHEET
     let worksheet = XLSX.utils.aoa_to_sheet(excelData);
-// PROFESSIONAL EXCEL FORMATTING
-let range = XLSX.utils.decode_range(worksheet["!ref"]);
+// PROFESSIONAL EXCEL FORMAT
 
-for (let R = range.s.r; R <= range.e.r; ++R) {
-    for (let C = range.s.c; C <= range.e.c; ++C) {
+// Merge Company Name
+worksheet["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } }
+];
+
+// Column Width
+worksheet["!cols"] = [
+    { wch: 18 },
+    { wch: 15 },
+    { wch: 16 },
+    { wch: 16 },
+    { wch: 17 },
+    { wch: 18 }
+];
+
+// Row Height
+worksheet["!rows"] = [
+    { hpt: 28 },
+    { hpt: 32 }
+];
+
+// Print Setup
+worksheet["!pageSetup"] = {
+    orientation: "landscape",
+    paperSize: 9,
+    fitToWidth: 1,
+    fitToHeight: 0
+};
+
+// Print Area
+worksheet["!printArea"] = "A1:F" + (excelData.length);
+
+// Freeze Header
+worksheet["!freeze"] = {
+    xSplit: 0,
+    ySplit: 8
+};
+// TITLE & HEADER STYLING
+
+// Company Name
+if (worksheet["A1"]) {
+    worksheet["A1"].s = {
+        font: {
+            bold: true,
+            sz: 16
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        }
+    };
+}
+
+// Packing List Title
+if (worksheet["A2"]) {
+    worksheet["A2"].s = {
+        font: {
+            bold: true,
+            sz: 18
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        }
+    };
+}
+
+// Table Header Row
+for (let col = 0; col < 6; col++) {
+
+    let cell = XLSX.utils.encode_cell({
+        r: 8,
+        c: col
+    });
+
+    if (worksheet[cell]) {
+        worksheet[cell].s = {
+            font: {
+                bold: true,
+                sz: 11
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: "center",
+                wrapText: true
+            },
+            border: {
+                top: { style: "thin" },
+                bottom: { style: "thin" },
+                left: { style: "thin" },
+                right: { style: "thin" }
+            }
+        };
+    }
+}// TABLE BODY FORMATTING
+
+let tableStartRow = 9;
+let lastDataRow = tableStartRow + rows.length - 1;
+
+for (let R = tableStartRow; R <= lastDataRow; R++) {
+
+    for (let C = 0; C < 6; C++) {
 
         let cellAddress = XLSX.utils.encode_cell({
-            r: R,
+            r: R - 1,
             c: C
         });
 
         if (!worksheet[cellAddress]) continue;
 
         worksheet[cellAddress].s = {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
             border: {
                 top: { style: "thin" },
                 bottom: { style: "thin" },
                 left: { style: "thin" },
                 right: { style: "thin" }
-            },
-            alignment: {
-                vertical: "center",
-                horizontal: "center"
             }
         };
     }
+}// GRAND TOTAL FORMATTING
+
+let grandTotalExcelRow = lastDataRow + 2;
+
+for (let C = 0; C < 6; C++) {
+
+    let cellAddress = XLSX.utils.encode_cell({
+        r: grandTotalExcelRow - 1,
+        c: C
+    });
+
+    if (!worksheet[cellAddress]) continue;
+
+    worksheet[cellAddress].s = {
+        font: {
+            bold: true,
+            sz: 11
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        },
+        border: {
+            top: { style: "medium" },
+            bottom: { style: "medium" },
+            left: { style: "thin" },
+            right: { style: "thin" }
+        }
+    };
 }
     // COLUMN WIDTH
     worksheet["!cols"] = [
@@ -1101,6 +1230,6 @@ for (let R = range.s.r; R <= range.e.r; ++R) {
     XLSX.writeFile(workbook, fileName);
 }
 </script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 </body>
 </html>
