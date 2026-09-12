@@ -231,10 +231,335 @@
     </div>
 </div>
 <div class="card">
-    <h2>🧹 Clear All</h2>
+    <h2>📋 PURCHASE ORDER INFORMATION</h2>
+
+    <div class="inputs">
+
+        <div>
+            <label>PO No</label>
+            <input type="text" id="poNo" placeholder="Example: PO-1001">
+        </div>
+
+        <div>
+            <label>Buyer</label>
+            <input type="text" id="buyer" placeholder="Example: H&M">
+        </div>
+
+        <div>
+            <label>Style No</label>
+            <input type="text" id="style" placeholder="Example: ST-2501">
+        </div>
+
+        <div>
+            <label>Color</label>
+            <input type="text" id="color" placeholder="Example: Black">
+        </div>
+
+        <div>
+            <label>Order Qty (PCS)</label>
+            <input type="number" id="orderQty" placeholder="Example: 200">
+        </div>
+
+        <div>
+            <label>Shipment Date</label>
+            <input type="date" id="shipmentDate">
+        </div>
+
+    </div>
+</div>PO Sheet Generator</h2>
+
+    <div class="inputs">
+
+        <div>
+            <label>PO No</label>
+            <input type="text" id="poNo" placeholder="Example: PO-1001">
+        </div>
+
+        <div>
+            <label>Buyer</label>
+            <input type="text" id="buyer" placeholder="Example: H&M">
+        </div>
+
+        <div>
+            <label>Style</label>
+            <input type="text" id="style" placeholder="Example: ST-2501">
+        </div>
+
+        <div>
+            <label>Color</label>
+            <input type="text" id="color" placeholder="Example: Black">
+        </div>
+
+    </div>
+<div style="margin-top: 15px;">
+
+    <div class="inputs">
+
+        <div>
+            <label>Starting Carton</label>
+            <input type="number" id="poStartCarton" placeholder="Example: 1">
+        </div>
+
+        <div>
+            <label>Ending Carton</label>
+            <input type="number" id="poEndCarton" placeholder="Example: 10">
+        </div>
+
+        <div>
+            <label>Qty per Carton</label>
+            <input type="number" id="poQtyPerCarton" placeholder="Example: 20">
+        </div>
+
+        <div>
+            <label>Net WT per Carton (KG)</label>
+            <input type="number" id="poNetWT" step="0.01" placeholder="Example: 10.50">
+        </div>
+
+        <div>
+            <label>Gross WT per Carton (KG)</label>
+            <input type="number" id="poGrossWT" step="0.01" placeholder="Example: 12.00">
+        </div>
+
+    </div>
+
+</div>
+    <button onclick="generatePO()">
+        Generate PO
+    </button>
+
+   <div class="card">
+    <h2>📋 PURCHASE ORDER INFORMATION</h2>
+<div class="card">
+    <h2>📦 PACKING LIST</h2>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; min-width:900px;">
+            <thead>
+                <tr style="background:#1f2937; color:white;">
+                    <th style="padding:10px; border:1px solid #ccc;">Carton No</th>
+                    <th style="padding:10px; border:1px solid #ccc;">Size</th>
+                    <th style="padding:10px; border:1px solid #ccc;">Qty / Carton</th>
+                    <th style="padding:10px; border:1px solid #ccc;">Total Qty</th>
+                    <th style="padding:10px; border:1px solid #ccc;">Net WT (KG)</th>
+                    <th style="padding:10px; border:1px solid #ccc;">Gross WT (KG)</th>
+                </tr>
+            </thead>
+
+            <tbody id="packingBody">
+                <tr>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" class="cartonNo" value="1">
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="text" class="size" placeholder="M">
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" class="qtyCarton" oninput="calculatePacking()">
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" class="totalQty" readonly>
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" class="netWT" step="0.01" oninput="calculatePacking()">
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" class="grossWT" step="0.01" oninput="calculatePacking()">
+                    </td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr style="font-weight:bold; background:#eef2ff;">
+                    <td colspan="3" style="padding:10px; border:1px solid #ccc; text-align:right;">
+                        GRAND TOTAL
+                    </td>
+
+                    <td style="padding:10px; border:1px solid #ccc;">
+                        <span id="grandQty">0</span>
+                    </td>
+
+                    <td style="padding:10px; border:1px solid #ccc;">
+                        <span id="grandNet">0.00</span> KG
+                    </td>
+
+                    <td style="padding:10px; border:1px solid #ccc;">
+                        <span id="grandGross">0.00</span> KG
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <button onclick="addPackingRow()">➕ Add Carton</button>
+</div>
+    <div class="inputs">
+
+        <div>
+            <label>PO No</label>
+            <input type="text" id="poNo" placeholder="Example: PO-1001">
+        </div>
+
+        <div>
+            <label>Buyer</label>
+            <input type="text" id="buyer" placeholder="Example: H&M">
+        </div>
+
+        <div>
+            <label>Style No</label>
+            <input type="text" id="style" placeholder="Example: ST-2501">
+        </div>
+
+        <div>
+            <label>Color</label>
+            <input type="text" id="color" placeholder="Example: Black">
+        </div>
+
+        <div>
+            <label>Order Qty (PCS)</label>
+            <input type="number" id="orderQty" placeholder="Example: 200">
+        </div>
+
+        <div>
+            <label>Shipment Date</label>
+            <input type="date" id="shipmentDate">
+        </div>
+
+    </div>
+</div><h2>🧹 Clear All</h2>
     <button class="danger" onclick="clearAll()">Clear Everything</button>
 </div>
+<div class="card">
+    <h2>📄 PROFESSIONAL PACKING LIST GENERATOR</h2>
 
+    <div class="inputs">
+
+        <div>
+            <label>Company / Exporter Name</label>
+            <input type="text" id="companyName" placeholder="Example: ABC Garments Ltd.">
+        </div>
+
+        <div>
+            <label>Buyer</label>
+            <input type="text" id="plBuyer" placeholder="Example: H&M">
+        </div>
+
+        <div>
+            <label>PO No</label>
+            <input type="text" id="plPO" placeholder="Example: PO-1001">
+        </div>
+
+        <div>
+            <label>Style No</label>
+            <input type="text" id="plStyle" placeholder="Example: ST-2501">
+        </div>
+
+        <div>
+            <label>Color</label>
+            <input type="text" id="plColor" placeholder="Example: Black">
+        </div>
+
+        <div>
+            <label>Shipment Date</label>
+            <input type="date" id="plShipmentDate">
+        </div>
+
+        <div>
+            <label>Destination</label>
+            <input type="text" id="plDestination" placeholder="Example: New York, USA">
+        </div>
+
+        <div>
+            <label>Country of Origin</label>
+            <input type="text" id="plOrigin" placeholder="Example: Bangladesh">
+        </div>
+
+    </div>
+
+    <div style="margin-top:20px; overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; min-width:1000px;">
+        <thead>
+            <tr style="background:#1f2937; color:white;">
+                <th style="padding:10px; border:1px solid #ccc;">Carton No</th>
+                <th style="padding:10px; border:1px solid #ccc;">Size</th>
+                <th style="padding:10px; border:1px solid #ccc;">Qty / Carton</th>
+                <th style="padding:10px; border:1px solid #ccc;">Total Qty</th>
+                <th style="padding:10px; border:1px solid #ccc;">Net WT (KG)</th>
+                <th style="padding:10px; border:1px solid #ccc;">Gross WT (KG)</th>
+                <th style="padding:10px; border:1px solid #ccc;">Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="professionalPackingBody">
+            <tr>
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="number" class="plCarton" value="1">
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="text" class="plSize" placeholder="M">
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="number" class="plQty" oninput="calculateProfessionalPL()">
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="number" class="plTotalQty" readonly>
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()">
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()">
+                </td>
+
+                <td style="padding:8px; border:1px solid #ccc;">
+                    <button type="button" onclick="this.closest('tr').remove(); calculateProfessionalPL();">
+                        🗑️
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+        <tfoot>
+            <tr style="font-weight:bold; background:#eef2ff;">
+                <td colspan="3" style="padding:10px; border:1px solid #ccc; text-align:right;">
+                    GRAND TOTAL
+                </td>
+
+                <td style="padding:10px; border:1px solid #ccc;">
+                    <span id="plGrandQty">0</span> PCS
+                </td>
+
+                <td style="padding:10px; border:1px solid #ccc;">
+                    <span id="plGrandNet">0.00</span> KG
+                </td>
+
+                <td style="padding:10px; border:1px solid #ccc;">
+                    <span id="plGrandGross">0.00</span> KG
+                </td>
+
+                <td style="padding:10px; border:1px solid #ccc;"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<button type="button" onclick="addProfessionalPackingRow()">
+    ➕ Add Carton
+</button><button onclick="generateProfessionalPL()">
+        📄 Generate Packing List
+    </button>
+
+    <div id="professionalPLResult" style="margin-top:20px;"></div>
+</div>
 <footer>
     <p>Garments Data Entry Helper • Version 1</p>
 </footer>
@@ -326,8 +651,456 @@ function checkMissingCartons() {
         document.getElementById("missingResult").innerText =
             "❌ Missing Carton: " + missing.join(", ");
     }
+}function generatePO() {
+
+    let poNo = document.getElementById("poNo").value;
+    let buyer = document.getElementById("buyer").value;
+    let style = document.getElementById("style").value;
+    let color = document.getElementById("color").value;
+
+    let start = Number(document.getElementById("poStartCarton").value);
+    let end = Number(document.getElementById("poEndCarton").value);
+    let qtyPerCarton = Number(document.getElementById("poQtyPerCarton").value);
+    let netWT = Number(document.getElementById("poNetWT").value);
+    let grossWT = Number(document.getElementById("poGrossWT").value);
+
+    let totalCartons = end - start + 1;
+    let totalQty = totalCartons * qtyPerCarton;
+    let totalNetWT = totalCartons * netWT;
+    let totalGrossWT = totalCartons * grossWT;
+
+    document.getElementById("poResult").innerHTML =
+        "PO No: " + poNo + "<br>" +
+        "Buyer: " + buyer + "<br>" +
+        "Style: " + style + "<br>" +
+        "Color: " + color + "<br><br>" +
+        "Total Cartons: " + totalCartons + "<br>" +
+        "Total Qty: " + totalQty + " pcs<br>" +
+        "Total Net WT: " + totalNetWT.toFixed(2) + " KG<br>" +
+        "Total Gross WT: " + totalGrossWT.toFixed(2) + " KG";
+}function calculatePacking() {
+
+    let rows = document.querySelectorAll("#packingBody tr");
+
+    let grandQty = 0;
+    let grandNet = 0;
+    let grandGross = 0;
+
+    rows.forEach(function(row) {
+
+        let qtyInput = row.querySelector(".qtyCarton");
+        let totalQtyInput = row.querySelector(".totalQty");
+        let netInput = row.querySelector(".netWT");
+        let grossInput = row.querySelector(".grossWT");
+
+        let qty = Number(qtyInput.value) || 0;
+        let net = Number(netInput.value) || 0;
+        let gross = Number(grossInput.value) || 0;
+
+        totalQtyInput.value = qty;
+
+        grandQty += qty;
+        grandNet += net;
+        grandGross += gross;
+    });
+
+    document.getElementById("grandQty").innerText = grandQty;
+    document.getElementById("grandNet").innerText = grandNet.toFixed(2);
+    document.getElementById("grandGross").innerText = grandGross.toFixed(2);
+}
+
+
+function addPackingRow() {
+
+    let tableBody = document.getElementById("packingBody");
+
+    let rowCount = tableBody.rows.length + 1;
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="cartonNo" value="${rowCount}">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="text" class="size" placeholder="M">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="qtyCarton" oninput="calculatePacking()">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="totalQty" readonly>
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="netWT" step="0.01" oninput="calculatePacking()">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="grossWT" step="0.01" oninput="calculatePacking()">
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+}function calculateProfessionalPL() {
+    let rows = document.querySelectorAll("#professionalPackingBody tr");
+
+    let grandQty = 0;
+    let grandNet = 0;
+    let grandGross = 0;
+
+    rows.forEach(function(row) {
+        let qty = Number(row.querySelector(".plQty").value) || 0;
+        let net = Number(row.querySelector(".plNet").value) || 0;
+        let gross = Number(row.querySelector(".plGross").value) || 0;
+
+        row.querySelector(".plTotalQty").value = qty;
+
+        grandQty += qty;
+        grandNet += net;
+        grandGross += gross;
+    });
+
+    document.getElementById("plGrandQty").innerText = grandQty;
+    document.getElementById("plGrandNet").innerText = grandNet.toFixed(2);
+    document.getElementById("plGrandGross").innerText = grandGross.toFixed(2);
+}function addProfessionalPackingRow() {
+    let tableBody = document.getElementById("professionalPackingBody");
+
+    let rowCount = tableBody.rows.length + 1;
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="plCarton" value="${rowCount}">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="text" class="plSize" placeholder="M">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="plQty" oninput="calculateProfessionalPL()">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="plTotalQty" readonly>
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="plNet" step="0.01" oninput="calculateProfessionalPL()">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <input type="number" class="plGross" step="0.01" oninput="calculateProfessionalPL()">
+        </td>
+
+        <td style="padding:8px; border:1px solid #ccc;">
+            <button type="button" onclick="this.closest('tr').remove(); calculateProfessionalPL();">
+                🗑️
+            </button>
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+}function generateProfessionalPL() {
+    let company = document.getElementById("companyName").value || "—";
+    let buyer = document.getElementById("plBuyer").value || "—";
+    let po = document.getElementById("plPO").value || "—";
+    let style = document.getElementById("plStyle").value || "—";
+    let color = document.getElementById("plColor").value || "—";
+    let shipmentDate = document.getElementById("plShipmentDate").value || "—";
+    let destination = document.getElementById("plDestination").value || "—";
+    let origin = document.getElementById("plOrigin").value || "—";
+
+    let rows = document.querySelectorAll("#professionalPackingBody tr");
+
+    let tableRows = "";
+
+    rows.forEach(function(row) {
+        let carton = row.querySelector(".plCarton").value || "";
+        let size = row.querySelector(".plSize").value || "";
+        let qty = Number(row.querySelector(".plQty").value) || 0;
+        let net = Number(row.querySelector(".plNet").value) || 0;
+        let gross = Number(row.querySelector(".plGross").value) || 0;
+
+        tableRows += `
+            <tr>
+                <td>${carton}</td>
+                <td>${size}</td>
+                <td>${qty}</td>
+                <td>${qty}</td>
+                <td>${net.toFixed(2)}</td>
+                <td>${gross.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    let grandQty = document.getElementById("plGrandQty").innerText;
+    let grandNet = document.getElementById("plGrandNet").innerText;
+    let grandGross = document.getElementById("plGrandGross").innerText;
+
+    document.getElementById("professionalPLResult").innerHTML = `
+        <div id="printPackingList" style="
+            background:white;
+            padding:35px;
+            border:1px solid #ccc;
+            font-family:Arial,sans-serif;
+            color:#111;
+        ">
+
+            <div style="text-align:center; margin-bottom:25px;">
+                <h1 style="margin-bottom:5px;">${company}</h1>
+                <h2 style="margin:0;">PACKING LIST</h2>
+            </div>
+
+            <table style="width:100%; margin-bottom:20px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:8px;"><b>BUYER:</b> ${buyer}</td>
+                    <td style="padding:8px;"><b>PO NO:</b> ${po}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;"><b>STYLE NO:</b> ${style}</td>
+                    <td style="padding:8px;"><b>COLOR:</b> ${color}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;"><b>SHIPMENT DATE:</b> ${shipmentDate}</td>
+                    <td style="padding:8px;"><b>DESTINATION:</b> ${destination}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px;"><b>COUNTRY OF ORIGIN:</b> ${origin}</td>
+                    <td style="padding:8px;"></td>
+                </tr>
+            </table>
+
+            <table style="
+                width:100%;
+                border-collapse:collapse;
+                text-align:center;
+            ">
+                <thead>
+                    <tr style="background:#1f2937;color:white;">
+                        <th style="padding:10px;border:1px solid #333;">CARTON NO</th>
+                        <th style="padding:10px;border:1px solid #333;">SIZE</th>
+                        <th style="padding:10px;border:1px solid #333;">QTY / CARTON</th>
+                        <th style="padding:10px;border:1px solid #333;">TOTAL QTY</th>
+                        <th style="padding:10px;border:1px solid #333;">NET WT (KG)</th>
+                        <th style="padding:10px;border:1px solid #333;">GROSS WT (KG)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${tableRows}
+                </tbody>
+
+                <tfoot>
+                    <tr style="font-weight:bold;background:#eef2ff;">
+                        <td colspan="3" style="padding:10px;border:1px solid #333;text-align:right;">
+                            GRAND TOTAL
+                        </td>
+                        <td style="padding:10px;border:1px solid #333;">
+                            ${grandQty}
+                        </td>
+                        <td style="padding:10px;border:1px solid #333;">
+                            ${grandNet}
+                        </td>
+                        <td style="padding:10px;border:1px solid #333;">
+                            ${grandGross}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin-top:70px;
+                text-align:center;
+            ">
+                <div>
+                    ____________________<br>
+                    Prepared By
+                </div>
+
+                <div>
+                    ____________________<br>
+                    Checked By
+                </div>
+
+                <div>
+                    ____________________<br>
+                    Authorized Signature
+                </div>
+            </div>
+
+        </div>
+
+        <div style="text-align:center;margin-top:20px;display:flex;justify-content:center;gap:10px;">
+
+    <button type="button" onclick="printPackingList()">
+        🖨️ Print / Save PDF
+    </button>
+
+    <button type="button" onclick="downloadPackingListExcel()">
+        📊 Download Excel
+    </button>
+
+</div>
+    `;
+}function downloadPackingListExcel() {
+
+    let company = document.getElementById("companyName").value || "";
+    let buyer = document.getElementById("plBuyer").value || "";
+    let po = document.getElementById("plPO").value || "";
+    let style = document.getElementById("plStyle").value || "";
+    let color = document.getElementById("plColor").value || "";
+    let shipmentDate = document.getElementById("plShipmentDate").value || "";
+    let destination = document.getElementById("plDestination").value || "";
+    let origin = document.getElementById("plOrigin").value || "";
+
+    let excelData = [];
+
+    // COMPANY
+    excelData.push([company]);
+    excelData.push(["PACKING LIST"]);
+    excelData.push([]);
+
+    // INFORMATION
+    excelData.push(["BUYER", buyer, "PO NO", po]);
+    excelData.push(["STYLE NO", style, "COLOR", color]);
+    excelData.push(["SHIPMENT DATE", shipmentDate, "DESTINATION", destination]);
+    excelData.push(["COUNTRY OF ORIGIN", origin]);
+    excelData.push([]);
+
+    // TABLE HEADER
+    excelData.push([
+        "CARTON NO",
+        "SIZE",
+        "QTY / CARTON",
+        "TOTAL QTY",
+        "NET WT (KG)",
+        "GROSS WT (KG)"
+    ]);
+
+    let rows = document.querySelectorAll("#professionalPackingBody tr");
+
+    let firstDataRow = 9;
+
+    rows.forEach(function(row, index) {
+
+        let carton = row.querySelector(".plCarton").value || "";
+        let size = row.querySelector(".plSize").value || "";
+
+        let qty = Number(row.querySelector(".plQty").value) || 0;
+        let net = Number(row.querySelector(".plNet").value) || 0;
+        let gross = Number(row.querySelector(".plGross").value) || 0;
+
+        let excelRow = firstDataRow + index;
+
+        excelData.push([
+            carton,
+            size,
+            qty,
+
+            // TOTAL QTY formula
+            { t: "n", f: `C${excelRow}` },
+
+            net,
+            gross
+        ]);
+    });
+
+    // GRAND TOTAL ROW
+    let lastDataRow = firstDataRow + rows.length - 1;
+    let grandTotalRow = lastDataRow + 2;
+
+    excelData.push([]);
+
+    excelData.push([
+        "GRAND TOTAL",
+        "",
+        "",
+
+        // GRAND TOTAL QTY
+        {
+            t: "n",
+            f: `SUM(D${firstDataRow}:D${lastDataRow})`
+        },
+
+        // GRAND NET WT
+        {
+            t: "n",
+            f: `SUM(E${firstDataRow}:E${lastDataRow})`
+        },
+
+        // GRAND GROSS WT
+        {
+            t: "n",
+            f: `SUM(F${firstDataRow}:F${lastDataRow})`
+        }
+    ]);
+
+    // CREATE WORKSHEET
+    let worksheet = XLSX.utils.aoa_to_sheet(excelData);
+// PROFESSIONAL EXCEL FORMATTING
+let range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+
+        let cellAddress = XLSX.utils.encode_cell({
+            r: R,
+            c: C
+        });
+
+        if (!worksheet[cellAddress]) continue;
+
+        worksheet[cellAddress].s = {
+            border: {
+                top: { style: "thin" },
+                bottom: { style: "thin" },
+                left: { style: "thin" },
+                right: { style: "thin" }
+            },
+            alignment: {
+                vertical: "center",
+                horizontal: "center"
+            }
+        };
+    }
+}
+    // COLUMN WIDTH
+    worksheet["!cols"] = [
+        { wch: 18 },
+        { wch: 15 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 20 }
+    ];
+
+    // CREATE WORKBOOK
+    let workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Packing List"
+    );
+
+    // FILE NAME
+    let fileName = po
+        ? po.replace(/[\\/:*?"<>|]/g, "_") + "_Packing_List.xlsx"
+        : "Packing_List.xlsx";
+
+    // DOWNLOAD
+    XLSX.writeFile(workbook, fileName);
 }
 </script>
-
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </body>
 </html>
